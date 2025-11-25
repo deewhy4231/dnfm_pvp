@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>밴픽 메인</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 100vw;
+      height: 100vh;
+      font-family: Arial, "맑은 고딕", sans-serif;
+
+      /* ★ 여기서 배경이미지 mainpage.png 적용됨 ★ */
+      background: url("images/mainpage.png") center center / cover no-repeat fixed;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 어두운 반투명 레이어 */
+    .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 상단 제목 */
+    h1 {
+      color: #f9fafb;
+      font-size: 48px;
+      margin-bottom: 40px;
+      text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+    }
+
+    /* 버튼 2개 정렬 */
+    .btn-wrap {
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* 버튼 스타일 */
+    a.main-btn {
+      min-width: 260px;
+      padding: 24px 40px;
+      border-radius: 16px;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      text-decoration: none;
+      color: #f9fafb;
+      background: rgba(15,23,42,0.9);
+      border: 3px solid #22c55e;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+
+      transition: transform 0.12s ease, 
+                  box-shadow 0.12s ease, 
+                  border-color 0.12s ease, 
+                  background 0.12s ease;
+    }
+
+    /* 버튼 호버 효과 */
+    a.main-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.9);
+      border-color: #4ade80;
+      background: rgba(15,23,42,0.95);
+    }
+
+    /* 버튼 아래 작은 설명 */
+    .sub-text {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #d1d5db;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <h1>던전앤파이터 모바일 밴픽창</h1>
+
+    <div class="btn-wrap">
+      <!-- 승패라운드 -->
+      <a class="main-btn" href="ban.html">
+        승패라운드
+        <div class="sub-text">라운드별 승·패 기록 모드</div>
+      </a>
+
+      <!-- 승자연전 -->
+      <a class="main-btn" href="ban2.html">
+        승자연전
+        <div class="sub-text">승리한 챔피언이 계속 싸우는 모드</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
