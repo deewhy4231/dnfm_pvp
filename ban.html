@@ -363,7 +363,7 @@
     </div>
   </div>
 
-  <!-- 밴픽 영역 전체 (레드: 좌측, 블루: 우측로 위치 변경) -->
+  <!-- 밴픽 영역 전체 (레드: 좌측, 블루: 우측) -->
   <div class="layout" id="draftArea">
     <!-- LEFT: RED TEAM -->
     <div class="panel">
@@ -409,7 +409,7 @@
     </div>
   </div>
 
-  <!-- 라운드 전투 영역 (레드: 좌측, 블루: 우측로 위치 변경) -->
+  <!-- 라운드 전투 영역 (레드: 좌측, 블루: 우측) -->
   <div class="battle-area">
     <div class="battle-benches">
       <div>
@@ -441,7 +441,7 @@
   </div>
 
   <script>
-    // --- 챔피언 데이터 (이미지 경로는 환경에 맞게 수정) ---
+    // --- 챔피언 데이터 ---
     const championData = [
       { name: "웨펀마스터", img: "images/mwea.png" },
       { name: "버서커", img: "images/mbus.png" },
@@ -482,7 +482,7 @@
       { name: "와일드베인", img: "images/wwai.png" },
       { name: "윈드시어", img: "images/wwin.png" },
       { name: "없음", img: "images/none.png" },
-      { name: "없음2", mg: "images/none.png" },
+      { name: "없음2", img: "images/none.png" },
     ];
 
     let maxBans  = 0;
@@ -501,7 +501,7 @@
     let battleStarted = false;
     let blueLossFlags = [];
     let redLossFlags  = [];
-    let activeIndex   = 0;  // 현재 라운드 인덱스
+    let activeIndex   = 0;
     let overallWinner = null;
 
     const statusEl      = document.getElementById("status");
@@ -578,6 +578,13 @@
     function handleChampionClick(name, element) {
       if (usedChampions.has(name)) return;
       if (phase === "pick" && bluePicks.length === maxPicks && redPicks.length === maxPicks) return;
+
+      // 안전장치: 밴 개수가 0인데도 ban 단계면 바로 픽으로 전환
+      if (phase === "ban" && maxBans === 0) {
+        phase = "pick";
+        updateStatus();
+        return;
+      }
 
       if (phase === "ban") {
         const totalBans = blueBans.length + redBans.length;
@@ -750,7 +757,7 @@
       }
     }
 
-    // BLUE WIN: 같은 라운드에서 레드 챔피언이 패배
+    // BLUE WIN
     function handleBlueWinRound() {
       if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
 
@@ -765,7 +772,7 @@
       renderBattleView();
     }
 
-    // RED WIN: 같은 라운드에서 블루 챔피언이 패배
+    // RED WIN
     function handleRedWinRound() {
       if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
 
@@ -797,8 +804,6 @@
 
     // ===== 초기화/기타 =====
     function resetAll() {
-      phase = "ban";
-      currentTeam = "blue";
       blueBans = [];
       redBans = [];
       bluePicks = [];
@@ -810,6 +815,11 @@
       redLossFlags  = [];
       activeIndex   = 0;
       overallWinner = null;
+
+      maxBans  = parseInt(banSelect.value, 10);
+      maxPicks = parseInt(pickSelect.value, 10);
+      phase = (maxBans === 0) ? "pick" : "ban";
+      currentTeam = "red";
 
       battleResultEl.textContent = "";
       blueWinBtn.disabled = true;
@@ -840,6 +850,13 @@
         return;
       }
       maxBans = newVal;
+
+      // 아직 아무것도 진행 안 된 상태에서 0으로 바꾸면 자동으로 픽 단계 + 레드 선픽
+      if (blueBans.length === 0 && redBans.length === 0 && bluePicks.length === 0 && redPicks.length === 0) {
+        phase = (maxBans === 0) ? "pick" : "ban";
+        currentTeam = "red";
+      }
+
       updateStatus();
     });
 
@@ -860,13 +877,15 @@
     blueWinBtn.addEventListener("click", handleBlueWinRound);
     redWinBtn.addEventListener("click", handleRedWinRound);
 
+    // 초기 세팅
     maxBans  = parseInt(banSelect.value, 10);
     maxPicks = parseInt(pickSelect.value, 10);
+    phase = (maxBans === 0) ? "pick" : "ban";
+    currentTeam = "red";
+
     renderChampionPool(championData);
     updateStatus();
     renderBattleView();
   </script>
 </body>
 </html>
-
-
