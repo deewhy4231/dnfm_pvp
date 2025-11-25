@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>토너먼트 모드</title>
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:#0f172a;
+      color:#e5e7eb;
+      font-family:Arial,"맑은 고딕",sans-serif;
+      padding:20px;
+    }
+
+    h1 { text-align:center; margin-bottom:8px; }
+
+    .sub {
+      text-align:center;
+      margin-bottom:18px;
+      color:#9ca3af;
+      font-size:14px;
+    }
+
+    .top-bar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .status {
+      padding:8px 12px;
+      background:#111827;
+      border-radius:999px;
+      font-size:13px;
+    }
+
+    .right-tools {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    label {
+      font-size:12px;
+      color:#e5e7eb;
+    }
+
+    select {
+      padding:4px 8px;
+      border-radius:6px;
+      border:1px solid #374151;
+      background:#020617;
+      color:#e5e7eb;
+      font-size:12px;
+    }
+
+    button {
+      padding:8px 14px;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+    }
+    .reset-btn { background:#ef4444; color:#fff; }
+    .shuffle-btn { background:#4b5563; color:#fff; }
+
+    /* 선택 영역 */
+    #selectionArea { margin-top:6px; }
+
+    .select-info {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:8px;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .select-count {
+      font-size:14px;
+      color:#e5e7eb;
+    }
+
+    .id-hint {
+      font-size:12px;
+      color:#9ca3af;
+    }
+
+    .champion-pool {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+      gap:10px;
+      max-height:420px;
+      overflow-y:auto;
+      background:#020617;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #1f2937;
+    }
+
+    .champion {
+      background:#020617;
+      border-radius:10px;
+      border:1px solid #1f2937;
+      padding:6px;
+      text-align:center;
+      cursor:pointer;
+      transition:transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease, opacity 0.08s ease;
+    }
+
+    .champion:hover {
+      transform:translateY(-2px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.8);
+      border-color:#4b5563;
+    }
+
+    .champion img {
+      width:100px;
+      height:100px;
+      object-fit:cover;
+      border-radius:8px;
+      display:block;
+      margin:0 auto 4px;
+    }
+
+    .champion-name {
+      font-size:12px;
+      color:#e5e7eb;
+    }
+
+    .champion.selected {
+      border-color:#22c55e;
+      box-shadow:0 0 0 2px rgba(34,197,94,0.6);
+    }
+
+    .entrants-box {
+      margin-top:10px;
+      background:#020617;
+      border-radius:12px;
+      border:1px solid #1f2937;
+      padding:10px 12px;
+    }
+    .entrants-title {
+      font-size:13px;
+      color:#9ca3af;
+      margin-bottom:6px;
+    }
+    .entrants-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .entrant-chip {
+      padding:3px 8px;
+      border-radius:999px;
+      font-size:12px;
+      background:#111827;
+      border:1px solid #374151;
+      white-space:nowrap;
+    }
+
+    /* 토너먼트 영역 */
+    #tournamentArea {
+      display:none;
+      margin-top:24px;
+    }
+
+    .round-info {
+      text-align:center;
+      margin-bottom:10px;
+      font-size:16px;
+      font-weight:700;
+    }
+
+    .current-match {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:36px;
+      margin-bottom:14px;
+    }
+
+    .match-card {
+      width:170px;
+      height:200px;
+      border-radius:12px;
+      border:2px solid #4b5563;
+      background:#020617;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+    }
+
+    .match-card img {
+      width:100%;
+      height:130px;
+      object-fit:cover;
+    }
+
+    .match-name {
+      font-size:13px;
+      margin-top:4px;
+      padding:0 4px;
+      text-align:center;
+      line-height:1.35;
+    }
+
+    .vs-text {
+      font-size:24px;
+      font-weight:900;
+      color:#e5e7eb;
+    }
+
+    .match-buttons {
+      display:flex;
+      justify-content:center;
+      gap:18px;
+      margin-bottom:14px;
+    }
+
+    .match-buttons button {
+      padding:9px 22px;
+      font-size:15px;
+      border-radius:999px;
+      border:2px solid #fff;
+      background:transparent;
+      cursor:pointer;
+    }
+
+    .btn-left  { border-color:#3b82f6; color:#3b82f6; }
+    .btn-right { border-color:#ef4444; color:#ef4444; }
+
+    .bracket-summary {
+      margin-top:8px;
+      background:#020617;
+      border-radius:12px;
+      border:1px solid #1f2937;
+      padding:10px 12px;
+      font-size:13px;
+      max-height:260px;
+      overflow-y:auto;
+    }
+
+    .bracket-round-title {
+      font-weight:700;
+      margin-top:6px;
+      margin-bottom:4px;
+      color:#e5e7eb;
+    }
+
+    .bracket-line {
+      color:#9ca3af;
+      font-size:12px;
+      margin-bottom:2px;
+    }
+
+    .champion-badge {
+      display:inline-block;
+      padding:1px 6px;
+      border-radius:999px;
+      font-size:11px;
+      background:#111827;
+      margin-right:4px;
+    }
+
+    .grand-winner {
+      margin-top:18px;
+      text-align:center;
+    }
+
+    .grand-winner-text {
+      font-size:42px;
+      font-weight:900;
+      color:#22c55e;
+      text-shadow:0 0 18px rgba(0,0,0,0.9);
+      margin-bottom:10px;
+    }
+
+    .grand-winner-card {
+      width:200px;
+      height:230px;
+      border-radius:16px;
+      border:3px solid #22c55e;
+      margin:0 auto;
+      overflow:hidden;
+      background:#020617;
+      box-shadow:0 0 30px rgba(34,197,94,0.4);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+    }
+
+    .grand-winner-card img {
+      width:100%;
+      height:160px;
+      object-fit:cover;
+    }
+
+    .grand-winner-name {
+      margin-top:8px;
+      font-size:16px;
+      font-weight:700;
+    }
+  </style>
+</head>
+<body>
+
+<h1>토너먼트 모드</h1>
+<div class="sub">64강 / 32강 / 16강 / 8강 / 4강 중 선택해서 토너먼트를 진행합니다.</div>
+
+<div class="top-bar">
+  <div class="status" id="statusText">브래킷 크기와 참가자를 선택해주세요.</div>
+  <div class="right-tools">
+    <label>
+      브래킷:
+      <select id="bracketSizeSelect">
+        <option value="4">4강 (4명)</option>
+        <option value="8" selected>8강 (8명)</option>
+        <option value="16">16강 (16명)</option>
+        <option value="32">32강 (32명)</option>
+        <option value="64">64강 (64명)</option>
+      </select>
+    </label>
+    <button class="shuffle-btn" id="shuffleBtn">챔피언 섞기</button>
+    <button class="reset-btn" id="resetBtn">초기화</button>
+  </div>
+</div>
+
+<!-- 참가자 선택 영역 -->
+<div id="selectionArea">
+  <div class="select-info">
+    <div class="select-count" id="selectCountText">선택된 참가자: 0 / 8</div>
+    <div class="id-hint">※ 캐릭터 사각형을 클릭하면 ID를 입력해서 참가자를 추가합니다. (중복 캐릭터 가능)</div>
+  </div>
+
+  <div class="champion-pool" id="championPool"></div>
+
+  <div class="entrants-box">
+    <div class="entrants-title">현재 참가자 목록</div>
+    <div class="entrants-list" id="entrantsList"></div>
+  </div>
+</div>
+
+<!-- 토너먼트 영역 -->
+<div id="tournamentArea">
+  <div class="round-info" id="roundInfo"></div>
+
+  <div class="current-match">
+    <div class="match-card" id="leftCard"></div>
+    <div class="vs-text">VS</div>
+    <div class="match-card" id="rightCard"></div>
+  </div>
+
+  <div class="match-buttons">
+    <button class="btn-left" id="leftWinBtn">왼쪽 승리</button>
+    <button class="btn-right" id="rightWinBtn">오른쪽 승리</button>
+  </div>
+
+  <div class="bracket-summary" id="bracketSummary"></div>
+
+  <div class="grand-winner" id="grandWinner"></div>
+</div>
+
+<script>
+  // 챔피언 데이터
+  const championData = [
+    { name: "웨펀마스터", img: "images/mwea.png" },
+    { name: "버서커", img: "images/mbus.png" },
+    { name: "소울브링어", img: "images/msou.png" },
+    { name: "아수라", img: "images/msur.png" },
+    { name: "넨마스터", img: "images/wnen.png" },
+    { name: "스트라이커", img: "images/wstr.png" },
+    { name: "스트리트파이터", img: "images/wspa.png" },
+    { name: "그래플러", img: "images/wgra.png" },
+    { name: "레인저(남)", img: "images/mran.png" },
+    { name: "런처(남)", img: "images/mlun.png" },
+    { name: "메카닉(남)", img: "images/mmec.png" },
+    { name: "스핏파이어(남)", img: "images/mspi.png" },
+    { name: "엘레멘탈마스터", img: "images/wele.png" },
+    { name: "배틀메이지", img: "images/wbat.png" },
+    { name: "마도학자", img: "images/wmad.png" },
+    { name: "인챈트리스", img: "images/winc.png" },
+    { name: "크루세이더(남)", img: "images/mcru.png" },
+    { name: "인파이터(남)", img: "images/minp.png" },
+    { name: "레인저(여)", img: "images/wran.png" },
+    { name: "런처(여)", img: "images/wlun.png" },
+    { name: "메카닉(여)", img: "images/wmec.png" },
+    { name: "스핏파이어(여)", img: "images/wspi.png" },
+    { name: "로그", img: "images/wlog.png" },
+    { name: "쿠노이치", img: "images/wcun.png" },
+    { name: "소드마스터", img: "images/wsod.png" },
+    { name: "암제", img: "images/wamj.png" },
+    { name: "검마", img: "images/wgum.png" },
+    { name: "베가본드", img: "images/wbeg.png" },
+    { name: "블레이드", img: "images/wbla.png" },
+    { name: "뱅가드", img: "images/mban.png" },
+    { name: "다크랜서", img: "images/mdar.png" },
+    { name: "크루세이더(여)", img: "images/wcru.png" },
+    { name: "이단심판관", img: "images/wida.png" },
+    { name: "무녀", img: "images/wmun.png" },
+    { name: "미스트리스", img: "images/wmis.png" },
+    { name: "인파이터(여)", img: "images/winp.png" },
+    { name: "와일드베인", img: "images/wwai.png" },
+    { name: "윈드시어", img: "images/wwin.png" }
+  ];
+
+  const statusText = document.getElementById("statusText");
+  const selectCountText = document.getElementById("selectCountText");
+  const championPoolEl = document.getElementById("championPool");
+  const entrantsListEl = document.getElementById("entrantsList");
+  const selectionAreaEl = document.getElementById("selectionArea");
+  const tournamentAreaEl = document.getElementById("tournamentArea");
+  const roundInfoEl = document.getElementById("roundInfo");
+  const leftCardEl = document.getElementById("leftCard");
+  const rightCardEl = document.getElementById("rightCard");
+  const leftWinBtn = document.getElementById("leftWinBtn");
+  const rightWinBtn = document.getElementById("rightWinBtn");
+  const bracketSummaryEl = document.getElementById("bracketSummary");
+  const grandWinnerEl = document.getElementById("grandWinner");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const bracketSizeSelect = document.getElementById("bracketSizeSelect");
+
+  let bracketSize = parseInt(bracketSizeSelect.value, 10);
+  let prevBracketSize = bracketSize;
+
+  let entrants = [];            // {name, img, id}
+  let currentRound = 1;
+  let currentMatchIndex = 0;
+  let currentRoundMatches = []; // [{p1,p2,winner}]
+  let nextRoundCandidates = [];
+  let allRoundsRecord = [];
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function renderChampionPool() {
+    championPoolEl.innerHTML = "";
+    championData.forEach(champ => {
+      const div = document.createElement("div");
+      div.className = "champion";
+      div.dataset.name = champ.name;
+
+      const img = document.createElement("img");
+      img.src = champ.img;
+      img.alt = champ.name;
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "champion-name";
+      nameEl.textContent = champ.name;
+
+      div.appendChild(img);
+      div.appendChild(nameEl);
+
+      div.addEventListener("click", () => handleSelectChampion(champ));
+
+      // 단순히 '한 번 이상 선택된 챔피언' 표시
+      if (entrants.find(e => e.name === champ.name)) {
+        div.classList.add("selected");
+      }
+
+      championPoolEl.appendChild(div);
+    });
+  }
+
+  function updateStatusText() {
+    const count = entrants.length;
+    statusText.textContent = `참가자를 선택해주세요 (${count} / ${bracketSize})`;
+    selectCountText.textContent = `선택된 참가자: ${count} / ${bracketSize}`;
+  }
+
+  function renderEntrantsList() {
+    entrantsListEl.innerHTML = "";
+    entrants.forEach((e, idx) => {
+      const chip = document.createElement("div");
+      chip.className = "entrant-chip";
+      chip.textContent = `${idx + 1}. ${e.name} (ID: ${e.id})`;
+      entrantsListEl.appendChild(chip);
+    });
+  }
+
+  function handleSelectChampion(champ) {
+    // 토너먼트가 이미 시작되면 추가 불가
+    if (tournamentAreaEl.style.display === "block") return;
+
+    if (entrants.length >= bracketSize) return;
+
+    let pid = window.prompt(`"${champ.name}" 참가자의 ID를 입력하세요:`, "");
+    if (!pid || pid.trim() === "") {
+      pid = champ.name + "#" + (entrants.length + 1);
+    }
+
+    entrants.push({
+      name: champ.name,
+      img: champ.img,
+      id: pid.trim()
+    });
+
+    renderChampionPool();
+    renderEntrantsList();
+    updateStatusText();
+
+    if (entrants.length === bracketSize) {
+      startTournament();
+    }
+  }
+
+  function startTournament() {
+    selectionAreaEl.style.display = "none";
+    tournamentAreaEl.style.display = "block";
+
+    const shuffled = shuffleArray([...entrants]);
+    currentRound = 1;
+    currentMatchIndex = 0;
+    nextRoundCandidates = [];
+    allRoundsRecord = [];
+
+    currentRoundMatches = [];
+    for (let i = 0; i < shuffled.length; i += 2) {
+      currentRoundMatches.push({
+        p1: shuffled[i],
+        p2: shuffled[i + 1],
+        winner: null
+      });
+    }
+
+    allRoundsRecord.push({
+      round: currentRound,
+      matches: currentRoundMatches.map(m => ({ ...m }))
+    });
+
+    renderCurrentMatch();
+    renderBracketSummary();
+  }
+
+  function roundLabelFromParticipants(num) {
+    if (num === 64) return "64강";
+    if (num === 32) return "32강";
+    if (num === 16) return "16강";
+    if (num === 8)  return "8강";
+    if (num === 4)  return "4강";
+    if (num === 2)  return "결승";
+    return num + "강";
+  }
+
+  function renderCurrentMatch() {
+    const totalMatches = currentRoundMatches.length;
+
+    if (currentMatchIndex >= totalMatches) {
+      // 현재 라운드 끝 → 다음 라운드 세팅
+      if (nextRoundCandidates.length === 1) {
+        // 우승
+        showGrandWinner(nextRoundCandidates[0]);
+        return;
+      } else {
+        // 다음 라운드 전체 매치업 생성
+        currentRound++;
+        const candidates = [...nextRoundCandidates];
+        nextRoundCandidates = [];
+        currentRoundMatches = [];
+        currentMatchIndex = 0;
+        for (let i = 0; i < candidates.length; i += 2) {
+          currentRoundMatches.push({
+            p1: candidates[i],
+            p2: candidates[i + 1],
+            winner: null
+          });
+        }
+        allRoundsRecord.push({
+          round: currentRound,
+          matches: currentRoundMatches.map(m => ({ ...m }))
+        });
+
+        // ★ 라운드가 끝난 직후, 다음 라운드 전체 매치업이 요약 창에 바로 표시됨
+        renderBracketSummary();
+      }
+    }
+
+    const match = currentRoundMatches[currentMatchIndex];
+    const participantsInThisRound = currentRoundMatches.length * 2;
+    roundInfoEl.textContent =
+      `ROUND ${currentRound} (${roundLabelFromParticipants(participantsInThisRound)}) - MATCH ${currentMatchIndex + 1} / ${currentRoundMatches.length}`;
+
+    leftCardEl.innerHTML = "";
+    rightCardEl.innerHTML = "";
+
+    const leftImg = document.createElement("img");
+    leftImg.src = match.p1.img;
+    leftImg.alt = match.p1.name;
+
+    const leftName = document.createElement("div");
+    leftName.className = "match-name";
+    leftName.textContent = `${match.p1.name}\n(ID: ${match.p1.id})`;
+
+    const rightImg = document.createElement("img");
+    rightImg.src = match.p2.img;
+    rightImg.alt = match.p2.name;
+
+    const rightName = document.createElement("div");
+    rightName.className = "match-name";
+    rightName.textContent = `${match.p2.name}\n(ID: ${match.p2.id})`;
+
+    leftCardEl.appendChild(leftImg);
+    leftCardEl.appendChild(leftName);
+    rightCardEl.appendChild(rightImg);
+    rightCardEl.appendChild(rightName);
+  }
+
+  function renderBracketSummary() {
+    bracketSummaryEl.innerHTML = "";
+
+    allRoundsRecord.forEach(record => {
+      const participants = record.matches.length * 2;
+      const title = document.createElement("div");
+      title.className = "bracket-round-title";
+      title.textContent = `ROUND ${record.round} (${roundLabelFromParticipants(participants)})`;
+      bracketSummaryEl.appendChild(title);
+
+      record.matches.forEach((m, idx) => {
+        const line = document.createElement("div");
+        line.className = "bracket-line";
+
+        const p1 = `<span class="champion-badge">${m.p1.name} (ID:${m.p1.id})</span>`;
+        const p2 = `<span class="champion-badge">${m.p2.name} (ID:${m.p2.id})</span>`;
+        const winner = m.winner
+          ? ` → 승자: ${m.winner.name} (ID:${m.winner.id})`
+          : "";
+
+        line.innerHTML = `Match ${idx + 1}: ${p1} vs ${p2}${winner}`;
+        bracketSummaryEl.appendChild(line);
+      });
+    });
+  }
+
+  function handleWin(side) {
+    const match = currentRoundMatches[currentMatchIndex];
+    const winner = side === "left" ? match.p1 : match.p2;
+    match.winner = winner;
+    nextRoundCandidates.push(winner);
+
+    // 기록 업데이트
+    const record = allRoundsRecord.find(r => r.round === currentRound);
+    if (record) {
+      record.matches[currentMatchIndex].winner = winner;
+    }
+
+    currentMatchIndex++;
+    renderBracketSummary();
+    renderCurrentMatch();
+  }
+
+  function showGrandWinner(champ) {
+    roundInfoEl.textContent = "토너먼트 종료";
+    leftWinBtn.disabled = true;
+    rightWinBtn.disabled = true;
+
+    grandWinnerEl.innerHTML = "";
+
+    const title = document.createElement("div");
+    title.className = "grand-winner-text";
+    title.textContent = "WINNER!";
+
+    const card = document.createElement("div");
+    card.className = "grand-winner-card";
+
+    const img = document.createElement("img");
+    img.src = champ.img;
+    img.alt = champ.name;
+
+    const nameDiv = document.createElement("div");
+    nameDiv.className = "grand-winner-name";
+    nameDiv.textContent = `${champ.name} (ID: ${champ.id})`;
+
+    card.appendChild(img);
+    card.appendChild(nameDiv);
+
+    grandWinnerEl.appendChild(title);
+    grandWinnerEl.appendChild(card);
+  }
+
+  leftWinBtn.addEventListener("click", () => handleWin("left"));
+  rightWinBtn.addEventListener("click", () => handleWin("right"));
+
+  shuffleBtn.addEventListener("click", () => {
+    shuffleArray(championData);
+    renderChampionPool();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    location.reload();
+  });
+
+  bracketSizeSelect.addEventListener("change", (e) => {
+    const newSize = parseInt(e.target.value, 10);
+    // 이미 참가자 넣었으면 변경 막기
+    if (entrants.length > 0) {
+      alert("이미 참가자가 선택되어 있어 브래킷 크기를 바꿀 수 없습니다. 초기화 후 다시 선택해주세요.");
+      bracketSizeSelect.value = String(prevBracketSize);
+      return;
+    }
+    bracketSize = newSize;
+    prevBracketSize = newSize;
+    updateStatusText();
+  });
+
+  // 초기 렌더
+  renderChampionPool();
+  updateStatusText();
+</script>
+
+</body>
+</html>
