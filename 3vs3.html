@@ -181,25 +181,25 @@
   <div class="config">
     <label>밴 개수
       <select id="banCount">
-        <option value="0">0</option>
+        <option value="0" selected>0</option>
         <option value="1">1</option>
         <option value="2">2</option>
-        <option value="3" selected>3</option>
+        <option value="3">3</option>
         <option value="4">4</option>
         <option value="5">5</option>
       </select>
     </label>
 
-    <label>체력(블루)
-      <select id="blueHP">
+    <label>체력(레드)
+      <select id="redHP">
         <option>1</option><option>2</option>
         <option>3</option><option>4</option>
         <option selected>5</option>
       </select>
     </label>
 
-    <label>체력(레드)
-      <select id="redHP">
+    <label>체력(블루)
+      <select id="blueHP">
         <option>1</option><option>2</option>
         <option>3</option><option>4</option>
         <option selected>5</option>
@@ -213,13 +213,14 @@
   </div>
 </div>
 
-<!-- 밴픽 영역 -->
+<!-- 밴픽 영역: LEFT=레드, RIGHT=블루 -->
 <div class="layout" id="draftArea">
+  <!-- 레드팀 (왼쪽) -->
   <div class="panel">
-    <div class="team-name blue">블루팀</div>
-    <div class="ban-list" id="blueBan"></div>
+    <div class="team-name red">레드팀</div>
+    <div class="ban-list" id="redBan"></div>
     <hr>
-    <div class="pick-list" id="bluePick"></div>
+    <div class="pick-list" id="redPick"></div>
   </div>
 
   <div class="panel">
@@ -227,44 +228,45 @@
     <div class="champion-pool" id="champPool"></div>
   </div>
 
+  <!-- 블루팀 (오른쪽) -->
   <div class="panel">
-    <div class="team-name red">레드팀</div>
-    <div class="ban-list" id="redBan"></div>
+    <div class="team-name blue">블루팀</div>
+    <div class="ban-list" id="blueBan"></div>
     <hr>
-    <div class="pick-list" id="redPick"></div>
+    <div class="pick-list" id="bluePick"></div>
   </div>
 </div>
 
-<!-- 전투 + 라인업 화면 -->
+<!-- 전투 + 라인업 화면 (LEFT=레드, RIGHT=블루) -->
 <div id="battleArea">
   <h2>대장전 시작!</h2>
 
   <div class="lineups">
     <div>
-      <div class="team-lineup-title blue">블루 팀 라인업</div>
-      <div class="lineup-cards" id="blueLineup"></div>
-    </div>
-    <div>
       <div class="team-lineup-title red">레드 팀 라인업</div>
       <div class="lineup-cards" id="redLineup"></div>
+    </div>
+    <div>
+      <div class="team-lineup-title blue">블루 팀 라인업</div>
+      <div class="lineup-cards" id="blueLineup"></div>
     </div>
   </div>
 
   <div class="health-container">
     <div>
-      <div style="color:#3b82f6; font-weight:800;">BLUE HP</div>
-      <div class="health-bar" id="blueHPBar"></div>
+      <div style="color:#ef4444; font-weight:800;">RED HP</div>
+      <div class="health-bar" id="redHPBar"></div>
     </div>
 
     <div>
-      <div style="color:#ef4444; font-weight:800;">RED HP</div>
-      <div class="health-bar" id="redHPBar"></div>
+      <div style="color:#3b82f6; font-weight:800;">BLUE HP</div>
+      <div class="health-bar" id="blueHPBar"></div>
     </div>
   </div>
 
   <div class="battle-buttons">
-    <button class="blue" id="blueWin">BLUE WIN</button>
     <button class="red" id="redWin">RED WIN</button>
+    <button class="blue" id="blueWin">BLUE WIN</button>
   </div>
 
   <div id="finalWinText" class="big-win-text"></div>
@@ -318,7 +320,7 @@
   const champPool = document.getElementById("champPool");
 
   // 밴픽 상태
-  let maxBan = parseInt(document.getElementById("banCount").value, 10);
+  let maxBan = parseInt(document.getElementById("banCount").value, 10); // 기본 0
   let bluePick = [];
   let redPick = [];
   let blueBan = [];
@@ -326,11 +328,11 @@
   let bannedSet = new Set();
 
   let phase = maxBan === 0 ? "pick" : "ban";  // 밴 0이면 바로 픽 단계
-  let turn = "blue";
+  let turn  = "red";                          // 레드가 먼저 시작
 
   // UI 요소
-  const blueBanEl = document.getElementById("blueBan");
-  const redBanEl  = document.getElementById("redBan");
+  const blueBanEl  = document.getElementById("blueBan");
+  const redBanEl   = document.getElementById("redBan");
   const bluePickEl = document.getElementById("bluePick");
   const redPickEl  = document.getElementById("redPick");
 
@@ -403,10 +405,10 @@
       // 턴 전환
       turn = (turn === "blue") ? "red" : "blue";
 
-      // 밴이 모두 끝나면 픽 단계로
+      // 밴이 모두 끝나면 픽 단계로, 레드부터 시작
       if (blueBan.length + redBan.length >= maxBan * 2) {
         phase = "pick";
-        turn = "blue";
+        turn  = "red";
       }
 
     } else if (phase === "pick") {
@@ -535,10 +537,10 @@
     const newVal = parseInt(e.target.value, 10);
     maxBan = newVal;
 
-    // 아직 아무 밴/픽도 안 했고, 밴 수를 0으로 바꾸면 바로 픽 단계로
+    // 아무 것도 진행되지 않은 상태에서 밴 수를 0으로 바꾸면 바로 픽 단계 + 레드 선픽
     if (blueBan.length === 0 && redBan.length === 0 && bluePick.length === 0 && redPick.length === 0) {
       phase = (maxBan === 0) ? "pick" : "ban";
-      turn  = "blue";
+      turn  = "red";
     }
 
     updateStatus();
