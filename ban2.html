@@ -202,7 +202,7 @@
       font-weight: 800;
     }
     .current-team.blue { color: #60a5fa; }
-    .current-team.red { color: #f97373; }
+    .current-team.red  { color: #f97373; }
     .done { color: #22c55e; }
 
     /* ===== 라운드 전투 영역 ===== */
@@ -342,9 +342,10 @@
       <label>
         밴 개수
         <select id="banCountSelect">
+          <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
-          <option value="3" selected>3</option>
+          <option value="3">3</option>
           <option value="4">4</option>
           <option value="5">5</option>
         </select>
@@ -371,22 +372,22 @@
     </div>
   </div>
 
-  <!-- ★ 밴픽 영역 전체에 id 부여 -->
+  <!-- 밴픽 영역: LEFT=레드, RIGHT=블루 -->
   <div class="layout" id="draftArea">
-    <!-- 블루팀 패널 -->
+    <!-- LEFT: 레드 팀 -->
     <div class="panel">
       <div class="team-title">
-        <span class="team-name blue">블루 팀</span>
+        <span class="team-name red">레드 팀</span>
         <span class="tag">LEFT SIDE</span>
       </div>
       <div>
         <div class="section-label">밴</div>
-        <div class="ban-list" id="blueBans"></div>
+        <div class="ban-list" id="redBans"></div>
       </div>
       <hr style="border-color:#1f2937; margin: 8px 0;">
       <div>
         <div class="section-label">픽</div>
-        <div class="pick-list" id="bluePicks"></div>
+        <div class="pick-list" id="redPicks"></div>
       </div>
     </div>
 
@@ -399,46 +400,50 @@
       <div class="champion-pool" id="championPool"></div>
     </div>
 
-    <!-- 레드팀 패널 -->
+    <!-- RIGHT: 블루 팀 -->
     <div class="panel">
       <div class="team-title">
-        <span class="team-name red">레드 팀</span>
+        <span class="team-name blue">블루 팀</span>
         <span class="tag">RIGHT SIDE</span>
       </div>
       <div>
         <div class="section-label">밴</div>
-        <div class="ban-list" id="redBans"></div>
+        <div class="ban-list" id="blueBans"></div>
       </div>
       <hr style="border-color:#1f2937; margin: 8px 0;">
       <div>
         <div class="section-label">픽</div>
-        <div class="pick-list" id="redPicks"></div>
+        <div class="pick-list" id="bluePicks"></div>
       </div>
     </div>
   </div>
 
-  <!-- ===== 라운드 전투 영역 ===== -->
+  <!-- ===== 라운드 전투 영역 (LEFT=레드, RIGHT=블루) ===== -->
   <div class="battle-area">
     <div class="battle-benches">
       <div>
-        <div class="team-label-small">블루 팀 라인업</div>
-        <div class="bench" id="blueBench"></div>
+        <div class="team-label-small">레드 팀 라인업</div>
+        <div class="bench" id="redBench"></div>
       </div>
       <div>
-        <div class="team-label-small" style="text-align:right;">레드 팀 라인업</div>
-        <div class="bench" id="redBench"></div>
+        <div class="team-label-small" style="text-align:right;">블루 팀 라인업</div>
+        <div class="bench" id="blueBench"></div>
       </div>
     </div>
 
     <div class="battle-center">
       <div class="battle-main">
-        <div class="big-card" id="blueActiveCard"></div>
-        <div class="vs-text">VS</div>
+        <!-- LEFT: 레드 -->
         <div class="big-card" id="redActiveCard"></div>
+        <div class="vs-text">VS</div>
+        <!-- RIGHT: 블루 -->
+        <div class="big-card" id="blueActiveCard"></div>
       </div>
       <div class="battle-buttons">
-        <button class="battle-btn" id="blueWinBtn" disabled>BLUE WIN</button>
+        <!-- LEFT 버튼: RED WIN -->
         <button class="battle-btn" id="redWinBtn" disabled>RED WIN</button>
+        <!-- RIGHT 버튼: BLUE WIN -->
+        <button class="battle-btn" id="blueWinBtn" disabled>BLUE WIN</button>
       </div>
       <div class="battle-result" id="battleResult"></div>
     </div>
@@ -484,15 +489,14 @@
       { name: "인파이터(여)", img: "images/winp.png" },
       { name: "와일드베인", img: "images/wwai.png" },
       { name: "윈드시어", img: "images/wwin.png" },
-      { name: "없음", img: "images/none.png" },
-      { name: "없음2", img: "images/none.png" },
     ];
 
-    let maxBans = 3;
+    let maxBans = 0;   // 기본 밴 0
     let maxPicks = 5;
 
     let phase = "ban";
-    let currentTeam = "blue";
+    let currentTeam = "red";  // 레드가 먼저 시작
+
     let blueBans = [];
     let redBans = [];
     let bluePicks = [];
@@ -575,7 +579,7 @@
 
     function checkBattleReady() {
       if (!battleStarted && bluePicks.length === maxPicks && redPicks.length === maxPicks) {
-        hideDraftArea();   // ★ 밴픽 완료 시 위 영역 숨김
+        hideDraftArea();
         startBattle();
       } else {
         renderBattleView();
@@ -590,6 +594,15 @@
         const totalBans = blueBans.length + redBans.length;
         if (totalBans >= maxBans * 2) {
           phase = "pick";
+          currentTeam = "red";
+          updateStatus();
+          return;
+        }
+
+        if (maxBans === 0) {
+          // 이론상 여기 안 들어오게 초기화/변경에서 처리하지만 안전용
+          phase = "pick";
+          currentTeam = "red";
           updateStatus();
           return;
         }
@@ -609,7 +622,7 @@
 
         if (blueBans.length + redBans.length >= maxBans * 2) {
           phase = "pick";
-          currentTeam = "blue";
+          currentTeam = "red"; // 픽도 레드부터 시작
         } else {
           currentTeam = currentTeam === "blue" ? "red" : "blue";
         }
@@ -693,6 +706,7 @@
       blueBenchEl.innerHTML = "";
       redBenchEl.innerHTML  = "";
 
+      // 블루 벤치
       bluePicks.forEach((name, idx) => {
         const champ = findChampion(name);
         const card = document.createElement("div");
@@ -710,6 +724,7 @@
         blueBenchEl.appendChild(card);
       });
 
+      // 레드 벤치
       redPicks.forEach((name, idx) => {
         const champ = findChampion(name);
         const card = document.createElement("div");
@@ -736,17 +751,19 @@
         const blueChamp = findChampion(bluePicks[blueActiveIdx]);
         const redChamp  = findChampion(redPicks[redActiveIdx]);
 
-        if (blueChamp) {
-          const img = document.createElement("img");
-          img.src = blueChamp.img;
-          img.alt = blueChamp.name;
-          blueActiveCardEl.appendChild(img);
-        }
+        // LEFT: 레드
         if (redChamp) {
           const img = document.createElement("img");
           img.src = redChamp.img;
           img.alt = redChamp.name;
           redActiveCardEl.appendChild(img);
+        }
+        // RIGHT: 블루
+        if (blueChamp) {
+          const img = document.createElement("img");
+          img.src = blueChamp.img;
+          img.alt = blueChamp.name;
+          blueActiveCardEl.appendChild(img);
         }
 
         if (blueLossFlags[blueActiveIdx]) blueActiveCardEl.classList.add("lost");
@@ -773,6 +790,7 @@
     function handleBlueWinRound() {
       if (!battleStarted || overallWinner) return;
 
+      // BLUE WIN → 레드 챔피언 패배
       redLossFlags[redActiveIdx] = true;
 
       if (redLossFlags.every(f => f)) {
@@ -791,6 +809,7 @@
     function handleRedWinRound() {
       if (!battleStarted || overallWinner) return;
 
+      // RED WIN → 블루 챔피언 패배
       blueLossFlags[blueActiveIdx] = true;
 
       if (blueLossFlags.every(f => f)) {
@@ -808,7 +827,7 @@
 
     function resetAll() {
       phase = "ban";
-      currentTeam = "blue";
+      currentTeam = "red";
       blueBans = [];
       redBans = [];
       bluePicks = [];
@@ -831,8 +850,20 @@
       bluePicksEl.innerHTML = "";
       redPicksEl.innerHTML = "";
 
-      showDraftArea(); // ★ 리셋 시 다시 밴픽창 보이기
+      showDraftArea();
       renderChampionPool(championData);
+
+      maxBans  = parseInt(banSelect.value, 10);
+      maxPicks = parseInt(pickSelect.value, 10);
+
+      if (maxBans === 0) {
+        phase = "pick";
+        currentTeam = "red";
+      } else {
+        phase = "ban";
+        currentTeam = "red";
+      }
+
       updateStatus();
       renderBattleView();
     }
@@ -851,6 +882,14 @@
         return;
       }
       maxBans = newVal;
+
+      if (maxBans === 0 && blueBans.length === 0 && redBans.length === 0) {
+        phase = "pick";
+        currentTeam = "red";
+      } else if (maxBans > 0 && (blueBans.length + redBans.length) < maxBans * 2) {
+        phase = "ban";
+      }
+
       updateStatus();
     });
 
@@ -871,13 +910,21 @@
     blueWinBtn.addEventListener("click", handleBlueWinRound);
     redWinBtn.addEventListener("click", handleRedWinRound);
 
-    maxBans = parseInt(banSelect.value, 10);
+    // 초기 세팅
+    maxBans  = parseInt(banSelect.value, 10); // 0
     maxPicks = parseInt(pickSelect.value, 10);
+
+    if (maxBans === 0) {
+      phase = "pick";
+      currentTeam = "red";
+    } else {
+      phase = "ban";
+      currentTeam = "red";
+    }
+
     renderChampionPool(championData);
     updateStatus();
     renderBattleView();
   </script>
 </body>
 </html>
-
-
