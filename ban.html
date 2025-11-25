@@ -362,36 +362,13 @@
     </div>
   </div>
 
-  <!-- 밴픽 영역 전체 -->
+  <!-- 밴픽 영역 전체 (레드: 좌측, 블루: 우측로 위치 변경) -->
   <div class="layout" id="draftArea">
+    <!-- LEFT: RED TEAM -->
     <div class="panel">
       <div class="team-title">
-        <span class="team-name blue">블루 팀</span>
+        <span class="team-name red"> 레드 팀</span>
         <span class="tag">LEFT SIDE</span>
-      </div>
-      <div>
-        <div class="section-label">밴</div>
-        <div class="ban-list" id="blueBans"></div>
-      </div>
-      <hr style="border-color:#1f2937; margin: 8px 0;">
-      <div>
-        <div class="section-label">픽</div>
-        <div class="pick-list" id="bluePicks"></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="team-title">
-        <span style="font-weight:700;">챔피언 리스트</span>
-        <span class="tag">이미지 클릭해서 밴 / 픽</span>
-      </div>
-      <div class="champion-pool" id="championPool"></div>
-    </div>
-
-    <div class="panel">
-      <div class="team-title">
-        <span class="team-name red">레드 팀</span>
-        <span class="tag">RIGHT SIDE</span>
       </div>
       <div>
         <div class="section-label">밴</div>
@@ -403,30 +380,60 @@
         <div class="pick-list" id="redPicks"></div>
       </div>
     </div>
+
+    <!-- CENTER: 챔피언 리스트 -->
+    <div class="panel">
+      <div class="team-title">
+        <span style="font-weight:700;">챔피언 리스트</span>
+        <span class="tag">이미지 클릭해서 밴 / 픽</span>
+      </div>
+      <div class="champion-pool" id="championPool"></div>
+    </div>
+
+    <!-- RIGHT: BLUE TEAM -->
+    <div class="panel">
+      <div class="team-title">
+        <span class="team-name blue"> 블루 팀</span>
+        <span class="tag">RIGHT SIDE</span>
+      </div>
+      <div>
+        <div class="section-label">밴</div>
+        <div class="ban-list" id="blueBans"></div>
+      </div>
+      <hr style="border-color:#1f2937; margin: 8px 0;">
+      <div>
+        <div class="section-label">픽</div>
+        <div class="pick-list" id="bluePicks"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- 라운드 전투 영역 -->
+  <!-- 라운드 전투 영역 (레드: 좌측, 블루: 우측로 위치 변경) -->
   <div class="battle-area">
     <div class="battle-benches">
       <div>
-        <div class="team-label-small">블루 팀 라인업</div>
-        <div class="bench" id="blueBench"></div>
+        <div class="team-label-small">레드 팀 라인업</div>
+        <div class="bench" id="redBench"></div>
       </div>
       <div>
-        <div class="team-label-small" style="text-align:right;">레드 팀 라인업</div>
-        <div class="bench" id="redBench"></div>
+        <div class="team-label-small" style="text-align:right;">블루 팀 라인업</div>
+        <div class="bench" id="blueBench"></div>
       </div>
     </div>
 
     <div class="battle-center">
       <div class="battle-main">
-        <div class="big-card" id="blueActiveCard"></div>
-        <div class="vs-text">VS</div>
+        <!-- LEFT: RED ACTIVE -->
         <div class="big-card" id="redActiveCard"></div>
+        <div class="vs-text">VS</div>
+        <!-- RIGHT: BLUE ACTIVE -->
+        <div class="big-card" id="blueActiveCard"></div>
       </div>
       <div class="battle-buttons">
-        <button class="battle-btn" id="blueWinBtn" disabled>BLUE WIN</button>
+        <!-- LEFT BUTTON: RED WIN -->
         <button class="battle-btn" id="redWinBtn" disabled>RED WIN</button>
+        <!-- RIGHT BUTTON: BLUE WIN -->
+        <button class="battle-btn" id="blueWinBtn" disabled>BLUE WIN</button>
       </div>
       <div class="battle-result" id="battleResult"></div>
     </div>
@@ -474,14 +481,14 @@
       { name: "와일드베인", img: "images/wwai.png" },
       { name: "윈드시어", img: "images/wwin.png" },
       { name: "없음", img: "images/none.png" },
-      { name: "없음2", img: "images/none.png" },
+      { name: "없음2", mg: "images/none.png" },
     ];
 
     let maxBans  = 3;
     let maxPicks = 5;
 
     let phase = "ban";      // "ban" | "pick"
-    let currentTeam = "blue";
+    let currentTeam = "red";
 
     let blueBans  = [];
     let redBans   = [];
@@ -860,6 +867,3 @@
   </script>
 </body>
 </html>
-
-
-
