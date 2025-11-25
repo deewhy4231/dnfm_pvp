@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>밴픽 메인</title>
+  <title>LOL 밴픽 메인</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -10,7 +10,7 @@
       height: 100vh;
       font-family: Arial, "맑은 고딕", sans-serif;
 
-      /* ★ 여기서 배경이미지 mainpage.png 적용됨 ★ */
+      /* 배경이미지 mainpage.png */
       background: url("images/mainpage.png") center center / cover no-repeat fixed;
 
       display: flex;
@@ -18,7 +18,6 @@
       justify-content: center;
     }
 
-    /* 어두운 반투명 레이어 */
     .overlay {
       width: 100%;
       height: 100%;
@@ -27,45 +26,49 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 20px;
     }
 
-    /* 상단 제목 */
     h1 {
       color: #f9fafb;
       font-size: 48px;
       margin-bottom: 40px;
       text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+      text-align: center;
     }
 
-    /* 버튼 2개 정렬 */
+    /* 2 x 2 그리드 버튼 영역 */
     .btn-wrap {
-      display: flex;
-      gap: 40px;
-      flex-wrap: wrap;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      gap: 30px;
+      max-width: 800px;
+      width: 100%;
     }
 
-    /* 버튼 스타일 */
     a.main-btn {
-      min-width: 260px;
-      padding: 24px 40px;
+      min-height: 120px;
+      padding: 24px 20px;
       border-radius: 16px;
       text-align: center;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       text-decoration: none;
       color: #f9fafb;
       background: rgba(15,23,42,0.9);
       border: 3px solid #22c55e;
       box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
 
-      transition: transform 0.12s ease, 
-                  box-shadow 0.12s ease, 
-                  border-color 0.12s ease, 
+      transition: transform 0.12s ease,
+                  box-shadow 0.12s ease,
+                  border-color 0.12s ease,
                   background 0.12s ease;
     }
 
-    /* 버튼 호버 효과 */
     a.main-btn:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 30px rgba(0,0,0,0.9);
@@ -73,30 +76,54 @@
       background: rgba(15,23,42,0.95);
     }
 
-    /* 버튼 아래 작은 설명 */
     .sub-text {
-      margin-top: 10px;
-      font-size: 16px;
+      margin-top: 8px;
+      font-size: 14px;
       font-weight: 500;
       color: #d1d5db;
+    }
+
+    @media (max-width: 640px) {
+      .btn-wrap {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 32px;
+        margin-bottom: 24px;
+      }
+      a.main-btn {
+        font-size: 22px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="overlay">
-    <h1>던전앤파이터 모바일 밴픽창</h1>
+    <h1>LOL 밴픽 / 대전 모드 선택</h1>
 
     <div class="btn-wrap">
-      <!-- 승패라운드 -->
+      <!-- 1행 1열: 승패라운드 -->
       <a class="main-btn" href="ban.html">
         승패라운드
         <div class="sub-text">라운드별 승·패 기록 모드</div>
       </a>
 
-      <!-- 승자연전 -->
+      <!-- 1행 2열: 승자연전 -->
       <a class="main-btn" href="ban2.html">
         승자연전
-        <div class="sub-text">승리한 챔피언이 계속 싸우는 모드</div>
+        <div class="sub-text">이긴 챔피언이 계속 싸우는 모드</div>
+      </a>
+
+      <!-- 2행 1열: 3:3 대장전 -->
+      <a class="main-btn" href="3vs3.html">
+        3:3 대장전
+        <div class="sub-text">대장전 모드</div>
+      </a>
+
+      <!-- 2행 2열: 토너먼트 -->
+      <a class="main-btn" href="ton.html">
+        토너먼트
+        <div class="sub-text">최대 64강 싱글 랜덤대장전</div>
       </a>
     </div>
   </div>
