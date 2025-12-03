@@ -874,12 +874,44 @@
       renderBattleView();
     }
 
-    function shuffleChampions() {
-      const copy = [...championData];
-      shuffleArray(copy);
-      renderChampionPool(copy);
-    }
+function shuffleChampions() {
+  const draftFinished = (bluePicks.length === maxPicks && redPicks.length === maxPicks);
 
+  // ---- 밴픽이 끝난 상태라면: 각 팀 라인업 순서를 섞는다 ----
+  if (draftFinished) {
+    // 각 팀 픽 순서 셔플
+    bluePicks = shuffleArray([...bluePicks]);
+    redPicks  = shuffleArray([...redPicks]);
+
+    // 배틀 상태를 새 라운드 기준으로 초기화
+    blueLossFlags = new Array(bluePicks.length).fill(false);
+    redLossFlags  = new Array(redPicks.length).fill(false);
+    activeIndex   = 0;
+    overallWinner = null;
+    battleStarted = true;
+
+    // 승리 텍스트/스타일 리셋
+    battleResultEl.textContent = "";
+    battleResultEl.classList.remove("final");
+    battleResultEl.style.color = "#22c55e";
+
+    // 숨겨놨던 배틀 영역 다시 보이게 (WIN 이후 섞는 경우 대비)
+    const battleMain = document.querySelector(".battle-main");
+    if (battleMain) battleMain.style.display = "flex";
+
+    blueWinBtn.disabled = false;
+    redWinBtn.disabled  = false;
+
+    // 새 순서대로 벤치/액티브 카드 다시 그림
+    renderBattleView();
+    return;
+  }
+
+  // ---- 아직 밴픽 중이라면: 기존처럼 챔피언 풀만 섞기 ----
+  const copy = [...championData];
+  shuffleArray(copy);
+  renderChampionPool(copy);
+}
     banSelect.addEventListener("change", () => {
       const newVal = parseInt(banSelect.value, 10);
       if (blueBans.length > newVal || redBans.length > newVal) {
