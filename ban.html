@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title> 던파 모바일 결투장 승패라운드</title>
+  <title>던파 모바일 결투장 승패라운드</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -96,7 +96,7 @@
       font-size: 18px;
     }
     .team-name.blue { color: #60a5fa; }
-    .team-name.red { color: #f97373; }
+    .team-name.red  { color: #f97373; }
     .tag {
       font-size: 11px;
       padding: 2px 6px;
@@ -104,7 +104,6 @@
       background: #1f2937;
       color: #9ca3af;
     }
-
     .ban-list, .pick-list {
       display: flex;
       flex-wrap: wrap;
@@ -145,12 +144,11 @@
       font-size: 12px;
       text-align: center;
       cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease, opacity 0.08s ease;
+      transition: 0.08s ease;
       user-select: none;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
     }
     .champion:hover {
       transform: translateY(-1px);
@@ -160,8 +158,6 @@
     .champion.used {
       opacity: 0.3;
       cursor: default;
-      transform: none;
-      box-shadow: none;
       border-style: dashed;
     }
     .champion img {
@@ -169,32 +165,8 @@
       height: 100px;
       object-fit: cover;
       border-radius: 8px;
-      display: block;
       margin-bottom: 4px;
     }
-    .champion-name {
-      font-size: 12px;
-      margin-top: 2px;
-      word-break: keep-all;
-    }
-
-    .phase-tag {
-      display: inline-block;
-      margin-right: 6px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .phase-ban { background: #312e81; color: #c4b5fd; }
-    .phase-pick { background: #064e3b; color: #6ee7b7; }
-
-    .current-team {
-      font-weight: 800;
-    }
-    .current-team.blue { color: #60a5fa; }
-    .current-team.red  { color: #f97373; }
-    .done { color: #22c55e; }
 
     /* ===== 라운드 전투 영역 ===== */
     .battle-area {
@@ -222,37 +194,23 @@
       height: 60px;
       border-radius: 8px;
       border: 2px solid #4b5563;
-      position: relative;
       overflow: hidden;
       background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .bench-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .bench-card img { width: 100%; }
     .bench-card.current {
       border-color: #f97316;
       box-shadow: 0 0 8px rgba(248,148,18,0.7);
     }
-
-    /* 패배한 캐릭터: 회색 처리 */
-    .bench-card.lost,
-    .big-card.lost {
+    .bench-card.lost {
       filter: grayscale(100%);
       opacity: 0.35;
-      border-color: #4b5563;
     }
 
-    .battle-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
+    .battle-center { display: flex; flex-direction: column; align-items: center; gap: 8px; }
     .battle-main {
       display: flex;
       align-items: center;
@@ -264,9 +222,8 @@
       height: 140px;
       border-radius: 10px;
       border: 3px solid #9ca3af;
-      background: #020617;
-      position: relative;
       overflow: hidden;
+      background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -276,19 +233,9 @@
       height: 100%;
       object-fit: cover;
     }
+    .vs-text { font-size: 20px; font-weight: 800; }
 
-    .vs-text {
-      font-weight: 800;
-      font-size: 20px;
-      color: #e5e7eb;
-    }
-    .battle-buttons {
-      display: flex;
-      gap: 40px;
-      margin-top: 6px;
-    }
-
-    /* WIN 버튼 기본 스타일 */
+    .battle-buttons { display: flex; gap: 40px; margin-top: 6px; }
     .battle-btn {
       min-width: 80px;
       border-radius: 4px;
@@ -297,44 +244,27 @@
       padding: 4px 10px;
       cursor: pointer;
     }
-    /* RED WIN: 빨간색 */
-    #redWinBtn {
-      border: 1px solid #ef4444;
-      color: #ef4444;
-    }
-    /* BLUE WIN: 파란색 */
-    #blueWinBtn {
-      border: 1px solid #3b82f6;
-      color: #3b82f6;
-    }
+    #redWinBtn  { border: 1px solid #ef4444; color: #ef4444; }
+    #blueWinBtn { border: 1px solid #3b82f6; color: #3b82f6; }
 
-    .battle-btn:disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
+    .battle-btn:disabled { opacity: 0.4; cursor: default; }
+
     .battle-result {
       margin-top: 4px;
       font-size: 16px;
       font-weight: 800;
-      color: #22c55e;
       text-align: center;
     }
-    /* 최종 승리 텍스트 (라운드 모두 종료 후) */
     .battle-result.final {
       font-size: 55px;
       font-weight: 900;
       margin-top: 16px;
       letter-spacing: 2px;
     }
-
-    .team-label-small {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-bottom: 4px;
-    }
   </style>
 </head>
 <body>
+
   <h1>던파 모바일 결투장 승패라운드</h1>
 
   <div class="top-bar">
@@ -347,23 +277,15 @@
           <option value="0" selected>0</option>
           <option value="1">1</option>
           <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
         </select>
       </label>
+
       <label>
         픽 개수
         <select id="pickCountSelect">
-          <option value="1">1</option>
-          <option value="2">2</option>
           <option value="3">3</option>
-          <option value="4">4</option>
           <option value="5" selected>5</option>
-          <option value="6">6</option>
           <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
         </select>
       </label>
     </div>
@@ -374,588 +296,542 @@
     </div>
   </div>
 
-  <!-- 밴픽 영역 전체 (레드: 좌측, 블루: 우측) -->
   <div class="layout" id="draftArea">
-    <!-- LEFT: RED TEAM -->
     <div class="panel">
       <div class="team-title">
-        <span class="team-name red"> 레드 팀</span>
-        <span class="tag">LEFT SIDE</span>
+        <span class="team-name red">레드 팀</span>
       </div>
-      <div>
-        <div class="section-label">밴</div>
-        <div class="ban-list" id="redBans"></div>
-      </div>
+      <div class="section-label">밴</div>
+      <div id="redBans" class="ban-list"></div>
       <hr style="border-color:#1f2937; margin: 8px 0;">
-      <div>
-        <div class="section-label">픽</div>
-        <div class="pick-list" id="redPicks"></div>
-      </div>
+      <div class="section-label">픽</div>
+      <div id="redPicks" class="pick-list"></div>
     </div>
 
-    <!-- CENTER: 챔피언 리스트 -->
     <div class="panel">
       <div class="team-title">
         <span style="font-weight:700;">챔피언 리스트</span>
-        <span class="tag">이미지 클릭해서 밴 / 픽</span>
       </div>
-      <div class="champion-pool" id="championPool"></div>
+      <div id="championPool" class="champion-pool"></div>
     </div>
 
-    <!-- RIGHT: BLUE TEAM -->
     <div class="panel">
       <div class="team-title">
-        <span class="team-name blue"> 블루 팀</span>
-        <span class="tag">RIGHT SIDE</span>
+        <span class="team-name blue">블루 팀</span>
       </div>
-      <div>
-        <div class="section-label">밴</div>
-        <div class="ban-list" id="blueBans"></div>
-      </div>
+      <div class="section-label">밴</div>
+      <div id="blueBans" class="ban-list"></div>
       <hr style="border-color:#1f2937; margin: 8px 0;">
-      <div>
-        <div class="section-label">픽</div>
-        <div class="pick-list" id="bluePicks"></div>
-      </div>
+      <div class="section-label">픽</div>
+      <div id="bluePicks" class="pick-list"></div>
     </div>
   </div>
 
-  <!-- 라운드 전투 영역 (레드: 좌측, 블루: 우측) -->
   <div class="battle-area">
     <div class="battle-benches">
       <div>
-        <div class="team-label-small">레드 팀 라인업</div>
-        <div class="bench" id="redBench"></div>
+        <div class="team-label-small">레드 팀</div>
+        <div id="redBench" class="bench"></div>
       </div>
       <div>
-        <div class="team-label-small" style="text-align:right;">블루 팀 라인업</div>
-        <div class="bench" id="blueBench"></div>
+        <div class="team-label-small" style="text-align:right;">블루 팀</div>
+        <div id="blueBench" class="bench"></div>
       </div>
     </div>
 
     <div class="battle-center">
       <div class="battle-main">
-        <!-- LEFT: RED ACTIVE -->
         <div class="big-card" id="redActiveCard"></div>
         <div class="vs-text">VS</div>
-        <!-- RIGHT: BLUE ACTIVE -->
         <div class="big-card" id="blueActiveCard"></div>
       </div>
+
       <div class="battle-buttons">
-        <!-- LEFT BUTTON: RED WIN -->
         <button class="battle-btn" id="redWinBtn" disabled>RED WIN</button>
-        <!-- RIGHT BUTTON: BLUE WIN -->
         <button class="battle-btn" id="blueWinBtn" disabled>BLUE WIN</button>
       </div>
+
       <div class="battle-result" id="battleResult"></div>
     </div>
   </div>
 
-  <script>
-    // --- 챔피언 데이터 ---
-    const championData = [
-      { name: "웨펀마스터", img: "images/mwea.png" },
-      { name: "버서커", img: "images/mbus.png" },
-      { name: "소울브링어", img: "images/msou.png" },
-      { name: "아수라", img: "images/msur.png" },
-      { name: "넨마스터", img: "images/wnen.png" },
-      { name: "스트라이커", img: "images/wstr.png" },
-      { name: "스트리트파이터", img: "images/wspa.png" },
-      { name: "그래플러", img: "images/wgra.png" },
-      { name: "레인저(남)", img: "images/mran.png" },
-      { name: "런처(남)", img: "images/mlun.png" },
-      { name: "메카닉(남)", img: "images/mmec.png" },
-      { name: "스핏파이어(남)", img: "images/mspi.png" },
-      { name: "엘레멘탈마스터", img: "images/wele.png" },
-      { name: "배틀메이지", img: "images/wbat.png" },
-      { name: "마도학자", img: "images/wmad.png" },
-      { name: "인챈트리스", img: "images/winc.png" },
-      { name: "크루세이더(남)", img: "images/mcru.png" },
-      { name: "인파이터(남)", img: "images/minp.png" },
-      { name: "레인저(여)", img: "images/wran.png" },
-      { name: "런처(여)", img: "images/wlun.png" },
-      { name: "메카닉(여)", img: "images/wmec.png" },
-      { name: "스핏파이어(여)", img: "images/wspi.png" },
-      { name: "로그", img: "images/wlog.png" },
-      { name: "쿠노이치", img: "images/wcun.png" },
-      { name: "소드마스터", img: "images/wsod.png" },
-      { name: "암제", img: "images/wamj.png" },
-      { name: "검마", img: "images/wgum.png" },
-      { name: "베가본드", img: "images/wbeg.png" },
-      { name: "블레이드", img: "images/wbla.png" },
-      { name: "뱅가드", img: "images/mban.png" },
-      { name: "다크랜서", img: "images/mdar.png" },
-      { name: "크루세이더(여)", img: "images/wcru.png" },
-      { name: "이단심판관", img: "images/wida.png" },
-      { name: "무녀", img: "images/wmun.png" },
-      { name: "미스트리스", img: "images/wmis.png" },
-      { name: "인파이터(여)", img: "images/winp.png" },
-      { name: "와일드베인", img: "images/wwai.png" },
-      { name: "윈드시어", img: "images/wwin.png" },
-      { name: "없음", img: "images/none.png" },
-      { name: "없음2", img: "images/none.png" },
-    ];
+<script>
 
-    let maxBans  = 0;
-    let maxPicks = 5;
+  /* -----------------------------
+     ⭐ JS에서 자동 점수판 생성
+  ----------------------------- */
+  let redScore = 0;
+  let blueScore = 0;
 
-    let phase = "ban";      // "ban" | "pick"
-    let currentTeam = "red";
+  const scoreBoardEl = document.createElement("div");
+  scoreBoardEl.id = "scoreBoard";
+  scoreBoardEl.style.cssText = `
+    font-size:24px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:15px;
+    color:white;
+  `;
+  scoreBoardEl.textContent = "0 : 0";
 
-    let blueBans  = [];
-    let redBans   = [];
-    let bluePicks = [];
-    let redPicks  = [];
-    let usedChampions = new Set();
+  document.body.insertBefore(scoreBoardEl, document.body.children[1]);
 
-    // 승패 라운드 상태 (고정 순서)
-    let battleStarted = false;
-    let blueLossFlags = [];
-    let redLossFlags  = [];
-    let activeIndex   = 0;
-    let overallWinner = null;
+  function updateScoreBoard() {
+    scoreBoardEl.textContent = `${redScore} : ${blueScore}`;
+  }
 
-    const statusEl      = document.getElementById("status");
-    const blueBansEl    = document.getElementById("blueBans");
-    const redBansEl     = document.getElementById("redBans");
-    const bluePicksEl   = document.getElementById("bluePicks");
-    const redPicksEl    = document.getElementById("redPicks");
-    const poolEl        = document.getElementById("championPool");
-    const resetBtn      = document.getElementById("resetBtn");
-    const shuffleBtn    = document.getElementById("shuffleBtn");
-    const banSelect     = document.getElementById("banCountSelect");
-    const pickSelect    = document.getElementById("pickCountSelect");
-    const draftAreaEl   = document.getElementById("draftArea");
+  /* -----------------------------
+     이하 전체 기능 (밴픽 + 승패라운드)
+  ----------------------------- */
 
-    const blueBenchEl      = document.getElementById("blueBench");
-    const redBenchEl       = document.getElementById("redBench");
-    const blueActiveCardEl = document.getElementById("blueActiveCard");
-    const redActiveCardEl  = document.getElementById("redActiveCard");
-    const blueWinBtn       = document.getElementById("blueWinBtn");
-    const redWinBtn        = document.getElementById("redWinBtn");
-    const battleResultEl   = document.getElementById("battleResult");
+  const championData = [
+    { name: "웨펀마스터", img: "images/mwea.png" },
+    { name: "버서커", img: "images/mbus.png" },
+    { name: "소울브링어", img: "images/msou.png" },
+    { name: "아수라", img: "images/msur.png" },
+    { name: "넨마스터", img: "images/wnen.png" },
+    { name: "스트라이커", img: "images/wstr.png" },
+    { name: "스트리트파이터", img: "images/wspa.png" },
+    { name: "그래플러", img: "images/wgra.png" },
+    { name: "레인저(남)", img: "images/mran.png" },
+    { name: "런처(남)", img: "images/mlun.png" },
+    { name: "메카닉(남)", img: "images/mmec.png" },
+    { name: "스핏파이어(남)", img: "images/mspi.png" },
+    { name: "엘레멘탈마스터", img: "images/wele.png" },
+    { name: "배틀메이지", img: "images/wbat.png" },
+    { name: "마도학자", img: "images/wmad.png" },
+    { name: "인챈트리스", img: "images/winc.png" },
+    { name: "크루세이더(남)", img: "images/mcru.png" },
+    { name: "인파이터(남)", img: "images/minp.png" },
+    { name: "레인저(여)", img: "images/wran.png" },
+    { name: "런처(여)", img: "images/wlun.png" },
+    { name: "메카닉(여)", img: "images/wmec.png" },
+    { name: "스핏파이어(여)", img: "images/wspi.png" },
+    { name: "로그", img: "images/wlog.png" },
+    { name: "쿠노이치", img: "images/wcun.png" },
+    { name: "소드마스터", img: "images/wsod.png" },
+    { name: "암제", img: "images/wamj.png" },
+    { name: "검마", img: "images/wgum.png" },
+    { name: "베가본드", img: "images/wbeg.png" },
+    { name: "블레이드", img: "images/wbla.png" },
+    { name: "뱅가드", img: "images/mban.png" },
+    { name: "다크랜서", img: "images/mdar.png" },
+    { name: "크루세이더(여)", img: "images/wcru.png" },
+    { name: "이단심판관", img: "images/wida.png" },
+    { name: "무녀", img: "images/wmun.png" },
+    { name: "미스트리스", img: "images/wmis.png" },
+    { name: "인파이터(여)", img: "images/winp.png" },
+    { name: "와일드베인", img: "images/wwai.png" },
+    { name: "윈드시어", img: "images/wwin.png" }
+  ];
 
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
+  let maxBans = 0;
+  let maxPicks = 5;
+  let phase = "ban";
+  let currentTeam = "red";
+
+  let blueBans = [];
+  let redBans = [];
+  let bluePicks = [];
+  let redPicks = [];
+  let usedChampions = new Set();
+
+  let battleStarted = false;
+  let blueLossFlags = [];
+  let redLossFlags = [];
+  let activeIndex = 0;
+  let overallWinner = null;
+
+  const statusEl = document.getElementById("status");
+  const blueBansEl = document.getElementById("blueBans");
+  const redBansEl = document.getElementById("redBans");
+  const bluePicksEl = document.getElementById("bluePicks");
+  const redPicksEl = document.getElementById("redPicks");
+  const poolEl = document.getElementById("championPool");
+  const resetBtn = document.getElementById("resetBtn");
+  const shuffleBtn = document.getElementById("shuffleBtn");
+  const banSelect = document.getElementById("banCountSelect");
+  const pickSelect = document.getElementById("pickCountSelect");
+  const draftAreaEl = document.getElementById("draftArea");
+
+  const blueBenchEl = document.getElementById("blueBench");
+  const redBenchEl = document.getElementById("redBench");
+  const blueActiveCardEl = document.getElementById("blueActiveCard");
+  const redActiveCardEl = document.getElementById("redActiveCard");
+  const blueWinBtn = document.getElementById("blueWinBtn");
+  const redWinBtn = document.getElementById("redWinBtn");
+  const battleResultEl = document.getElementById("battleResult");
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    function findChampion(name) {
-      return championData.find(c => c.name === name);
+    return arr;
+  }
+
+  function findChampion(name) {
+    return championData.find(c => c.name === name);
+  }
+
+  function updateStatus() {
+    const totalBans = blueBans.length + redBans.length;
+    const totalPicks = bluePicks.length + redPicks.length;
+    let html = "";
+
+    if (phase === "ban") {
+      html += `<span class="phase-tag phase-ban">BAN PHASE</span>`;
+      html += `<span class="current-team ${currentTeam}">${currentTeam === "blue" ? "블루팀" : "레드팀"}</span>`;
+      html += ` 차례 (밴 ${totalBans}/${maxBans * 2})`;
+    } else {
+      html += `<span class="phase-tag phase-pick">PICK PHASE</span>`;
+      html += `<span class="current-team ${currentTeam}">${currentTeam === "blue" ? "블루팀" : "레드팀"}</span>`;
+      html += ` 차례 (픽 ${totalPicks}/${maxPicks * 2})`;
     }
 
-    function hideDraftArea() { draftAreaEl.style.display = "none"; }
-    function showDraftArea() { draftAreaEl.style.display = "grid"; }
-
-    function updateStatus() {
-      const totalBans  = blueBans.length + redBans.length;
-      const totalPicks = bluePicks.length + redPicks.length;
-      let html = "";
-
-      if (phase === "ban") {
-        html += `<span class="phase-tag phase-ban">BAN PHASE</span>`;
-        html += `<span class="current-team ${currentTeam}">${currentTeam === "blue" ? "블루팀" : "레드팀"}</span> `;
-        html += `차례입니다. (전체 밴 ${totalBans}/${maxBans * 2})`;
-      } else if (phase === "pick") {
-        html += `<span class="phase-tag phase-pick">PICK PHASE</span>`;
-        html += `<span class="current-team ${currentTeam}">${currentTeam === "blue" ? "블루팀" : "레드팀"}</span> `;
-        html += `차례입니다. (전체 픽 ${totalPicks}/${maxPicks * 2})`;
-      }
-
-      if (bluePicks.length === maxPicks && redPicks.length === maxPicks) {
-        html = `<span class="phase-tag phase-pick">PICK PHASE</span><span class="done">모든 밴/픽이 완료되었습니다.</span>`;
-      }
-      statusEl.innerHTML = html;
+    if (bluePicks.length === maxPicks && redPicks.length === maxPicks) {
+      html = `<span class="phase-tag phase-pick">PICK PHASE</span> <span class="done">모든 밴/픽 완료</span>`;
     }
 
-    function addChip(parentEl, name, type) {
-      const chip = document.createElement("div");
-      chip.className = "chip " + (type === "ban" ? "ban" : "pick");
-      chip.textContent = name;
-      parentEl.appendChild(chip);
-    }
+    statusEl.innerHTML = html;
+  }
 
-    function checkBattleReady() {
-      if (!battleStarted && bluePicks.length === maxPicks && redPicks.length === maxPicks) {
-        hideDraftArea();
-        startBattle();
-      } else {
-        renderBattleView();
-      }
-    }
+  function addChip(parentEl, name, type) {
+    const chip = document.createElement("div");
+    chip.className = "chip " + type;
+    chip.textContent = name;
+    parentEl.appendChild(chip);
+  }
 
-    function handleChampionClick(name, element) {
-      if (usedChampions.has(name)) return;
-      if (phase === "pick" && bluePicks.length === maxPicks && redPicks.length === maxPicks) return;
+  function hideDraftArea() {
+    draftAreaEl.style.display = "none";
+  }
 
-      // 안전장치: 밴 개수가 0인데도 ban 단계면 바로 픽으로 전환
-      if (phase === "ban" && maxBans === 0) {
+  function showDraftArea() {
+    draftAreaEl.style.display = "grid";
+  }
+
+  function handleChampionClick(name, element) {
+    if (usedChampions.has(name)) return;
+    if (phase === "pick" && bluePicks.length === maxPicks && redPicks.length === maxPicks) return;
+
+    if (phase === "ban") {
+      if (maxBans === 0) {
         phase = "pick";
         updateStatus();
         return;
       }
 
-      if (phase === "ban") {
-        const totalBans = blueBans.length + redBans.length;
-        if (totalBans >= maxBans * 2) {
-          phase = "pick";
-          updateStatus();
-          return;
-        }
+      const totalBans = blueBans.length + redBans.length;
 
-        if (currentTeam === "blue") {
-          if (blueBans.length >= maxBans) return;
-          blueBans.push(name);
-          addChip(blueBansEl, name, "ban");
-        } else {
-          if (redBans.length >= maxBans) return;
-          redBans.push(name);
-          addChip(redBansEl, name, "ban");
-        }
-
-        usedChampions.add(name);
-        element.classList.add("used");
-
-        if (blueBans.length + redBans.length >= maxBans * 2) {
-          phase = "pick";
-          currentTeam = "blue";
-        } else {
-          currentTeam = currentTeam === "blue" ? "red" : "blue";
-        }
-      } else if (phase === "pick") {
-        if (currentTeam === "blue") {
-          if (bluePicks.length >= maxPicks) return;
-          bluePicks.push(name);
-          addChip(bluePicksEl, name, "pick");
-        } else {
-          if (redPicks.length >= maxPicks) return;
-          redPicks.push(name);
-          addChip(redPicksEl, name, "pick");
-        }
-
-        usedChampions.add(name);
-        element.classList.add("used");
-
-        if (!(bluePicks.length === maxPicks && redPicks.length === maxPicks)) {
-          currentTeam = currentTeam === "blue" ? "red" : "blue";
-        }
-      }
-
-      updateStatus();
-      checkBattleReady();
-    }
-
-    function renderChampionPool(list) {
-      poolEl.innerHTML = "";
-      list.forEach(champ => {
-        const item = document.createElement("div");
-        item.className = "champion";
-        item.dataset.name = champ.name;
-
-        const img = document.createElement("img");
-        img.src = champ.img;
-        img.alt = champ.name;
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "champion-name";
-        nameEl.textContent = champ.name;
-
-        item.appendChild(img);
-        item.appendChild(nameEl);
-        item.addEventListener("click", () => handleChampionClick(champ.name, item));
-
-        if (usedChampions.has(champ.name)) {
-          item.classList.add("used");
-        }
-        poolEl.appendChild(item);
-      });
-    }
-
-    // ===== 승패 라운드 전투 로직 (고정 순서) =====
-    function startBattle() {
-      battleStarted = true;
-      blueLossFlags = new Array(bluePicks.length).fill(false);
-      redLossFlags  = new Array(redPicks.length).fill(false);
-      activeIndex   = 0;
-      overallWinner = null;
-
-      blueWinBtn.disabled = false;
-      redWinBtn.disabled  = false;
-      battleResultEl.textContent = "";
-      battleResultEl.classList.remove("final");
-      renderBattleView();
-    }
-
-    function renderBattleView() {
-      // 항상 초기에는 final 클래스 제거
-      battleResultEl.classList.remove("final");
-
-      // 최종 승자 결정 시: 초상화 제거 + 큰 글씨로 승자 표시
-      if (overallWinner) {
-        blueBenchEl.innerHTML = "";
-        redBenchEl.innerHTML  = "";
-        blueActiveCardEl.innerHTML = "";
-        redActiveCardEl.innerHTML  = "";
-        blueActiveCardEl.classList.remove("lost");
-        redActiveCardEl.classList.remove("lost");
-
-        blueWinBtn.disabled = true;
-        redWinBtn.disabled  = true;
-
-  // ★ battle-center 숨기기
-  document.querySelector(".battle-main").style.display = "none";
-
-        battleResultEl.classList.add("final");
-        battleResultEl.style.color = (overallWinner === "blue") ? "#3b82f6" : "#f97373";
-        battleResultEl.textContent = overallWinner === "blue" ? "BLUE TEAM WIN" : "RED TEAM WIN";
+      if (totalBans >= maxBans * 2) {
+        phase = "pick";
+        currentTeam = "blue";
+        updateStatus();
         return;
       }
 
-      // 아직 최종 승자 안 났을 때: 라인업 / 액티브 카드 표시
-      blueBenchEl.innerHTML = "";
-      redBenchEl.innerHTML  = "";
-
-      bluePicks.forEach((name, idx) => {
-        const champ = findChampion(name);
-        const card  = document.createElement("div");
-        card.className = "bench-card";
-        if (battleStarted && !overallWinner && idx === activeIndex) {
-          card.classList.add("current");
-        }
-        if (blueLossFlags[idx]) card.classList.add("lost");
-        if (champ) {
-          const img = document.createElement("img");
-          img.src = champ.img;
-          img.alt = champ.name;
-          card.appendChild(img);
-        }
-        blueBenchEl.appendChild(card);
-      });
-
-      redPicks.forEach((name, idx) => {
-        const champ = findChampion(name);
-        const card  = document.createElement("div");
-        card.className = "bench-card";
-        if (battleStarted && !overallWinner && idx === activeIndex) {
-          card.classList.add("current");
-        }
-        if (redLossFlags[idx]) card.classList.add("lost");
-        if (champ) {
-          const img = document.createElement("img");
-          img.src = champ.img;
-          img.alt = champ.name;
-          card.appendChild(img);
-        }
-        redBenchEl.appendChild(card);
-      });
-
-      blueActiveCardEl.innerHTML = "";
-      redActiveCardEl.innerHTML  = "";
-      blueActiveCardEl.classList.remove("lost");
-      redActiveCardEl.classList.remove("lost");
-
-      if (battleStarted && bluePicks.length && redPicks.length && activeIndex < bluePicks.length) {
-        const blueChamp = findChampion(bluePicks[activeIndex]);
-        const redChamp  = findChampion(redPicks[activeIndex]);
-
-        if (blueChamp) {
-          const img = document.createElement("img");
-          img.src = blueChamp.img;
-          img.alt = blueChamp.name;
-          blueActiveCardEl.appendChild(img);
-        }
-        if (redChamp) {
-          const img = document.createElement("img");
-          img.src = redChamp.img;
-          img.alt = redChamp.name;
-          redActiveCardEl.appendChild(img);
-        }
-
-        if (blueLossFlags[activeIndex]) blueActiveCardEl.classList.add("lost");
-        if (redLossFlags[activeIndex])  redActiveCardEl.classList.add("lost");
-      }
-
-      if (!battleStarted || activeIndex >= bluePicks.length) {
-        blueWinBtn.disabled = true;
-        redWinBtn.disabled  = true;
+      if (currentTeam === "blue") {
+        blueBans.push(name);
+        addChip(blueBansEl, name, "ban");
       } else {
-        blueWinBtn.disabled = false;
-        redWinBtn.disabled  = false;
+        redBans.push(name);
+        addChip(redBansEl, name, "ban");
       }
 
-      // 진행 중일 땐 라운드 결과 텍스트 리셋 (최종 승리/무승부 외)
-      battleResultEl.textContent = "";
-    }
+      usedChampions.add(name);
+      element.classList.add("used");
 
-    // BLUE WIN
-    function handleBlueWinRound() {
-      if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
-
-      // 레드가 패배
-      redLossFlags[activeIndex] = true;
-
-      if (redLossFlags.every(f => f)) {
-        overallWinner = "blue";
+      if (blueBans.length + redBans.length >= maxBans * 2) {
+        phase = "pick";
+        currentTeam = "blue";
       } else {
-        activeIndex++;
-        if (activeIndex >= bluePicks.length) decideWinnerIfNeeded();
+        currentTeam = currentTeam === "blue" ? "red" : "blue";
       }
-      renderBattleView();
     }
 
-    // RED WIN
-    function handleRedWinRound() {
-      if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
-
-      // 블루가 패배
-      blueLossFlags[activeIndex] = true;
-
-      if (blueLossFlags.every(f => f)) {
-        overallWinner = "red";
+    else if (phase === "pick") {
+      if (currentTeam === "blue") {
+        bluePicks.push(name);
+        addChip(bluePicksEl, name, "pick");
       } else {
-        activeIndex++;
-        if (activeIndex >= bluePicks.length) decideWinnerIfNeeded();
+        redPicks.push(name);
+        addChip(redPicksEl, name, "pick");
       }
-      renderBattleView();
-    }
 
-    // 모든 라운드가 끝났는데 아직 한 팀이 전멸하지 않은 경우, 남은 챔피언 수로 승패 결정
-    function decideWinnerIfNeeded() {
-      if (overallWinner) return;
-      const blueAlive = blueLossFlags.filter(f => !f).length;
-      const redAlive  = redLossFlags.filter(f => !f).length;
+      usedChampions.add(name);
+      element.classList.add("used");
 
-      if (blueAlive > redAlive) {
-        overallWinner = "blue";
-      } else if (redAlive > blueAlive) {
-        overallWinner = "red";
-      } else {
-        battleResultEl.classList.remove("final");
-        battleResultEl.style.color = "#22c55e";
-        battleResultEl.textContent = "무승부 (남은 챔피언 수 동일)";
+      if (!(bluePicks.length === maxPicks && redPicks.length === maxPicks)) {
+        currentTeam = currentTeam === "blue" ? "red" : "blue";
       }
     }
 
-    // ===== 초기화/기타 =====
-    function resetAll() {
-      blueBans = [];
-      redBans = [];
-      bluePicks = [];
-      redPicks = [];
-      usedChampions = new Set();
-
-      battleStarted = false;
-      blueLossFlags = [];
-      redLossFlags  = [];
-      activeIndex   = 0;
-      overallWinner = null;
-
-      maxBans  = parseInt(banSelect.value, 10);
-      maxPicks = parseInt(pickSelect.value, 10);
-      phase = (maxBans === 0) ? "pick" : "ban";
-      currentTeam = "red";
-
-      battleResultEl.textContent = "";
-      battleResultEl.classList.remove("final");
-      battleResultEl.style.color = "#22c55e";
-      blueWinBtn.disabled = true;
-      redWinBtn.disabled  = true;
-
-      blueBansEl.innerHTML = "";
-      redBansEl.innerHTML  = "";
-      bluePicksEl.innerHTML = "";
-      redPicksEl.innerHTML  = "";
-
-      showDraftArea();
-      renderChampionPool(championData);
-      updateStatus();
-      renderBattleView();
-    }
-
-function shuffleChampions() {
-  const draftFinished = (bluePicks.length === maxPicks && redPicks.length === maxPicks);
-
-  // ---- 밴픽이 끝난 상태라면: 각 팀 라인업 순서를 섞는다 ----
-  if (draftFinished) {
-    // 각 팀 픽 순서 셔플
-    bluePicks = shuffleArray([...bluePicks]);
-    redPicks  = shuffleArray([...redPicks]);
-
-    // 배틀 상태를 새 라운드 기준으로 초기화
-    blueLossFlags = new Array(bluePicks.length).fill(false);
-    redLossFlags  = new Array(redPicks.length).fill(false);
-    activeIndex   = 0;
-    overallWinner = null;
-    battleStarted = true;
-
-    // 승리 텍스트/스타일 리셋
-    battleResultEl.textContent = "";
-    battleResultEl.classList.remove("final");
-    battleResultEl.style.color = "#22c55e";
-
-    // 숨겨놨던 배틀 영역 다시 보이게 (WIN 이후 섞는 경우 대비)
-    const battleMain = document.querySelector(".battle-main");
-    if (battleMain) battleMain.style.display = "flex";
-
-    blueWinBtn.disabled = false;
-    redWinBtn.disabled  = false;
-
-    // 새 순서대로 벤치/액티브 카드 다시 그림
-    renderBattleView();
-    return;
+    updateStatus();
+    checkBattleReady();
   }
 
-  // ---- 아직 밴픽 중이라면: 기존처럼 챔피언 풀만 섞기 ----
-  const copy = [...championData];
-  shuffleArray(copy);
-  renderChampionPool(copy);
-}
-    banSelect.addEventListener("change", () => {
-      const newVal = parseInt(banSelect.value, 10);
-      if (blueBans.length > newVal || redBans.length > newVal) {
-        alert("이미 진행된 밴 수보다 작게 설정할 수 없습니다.");
-        banSelect.value = String(maxBans);
-        return;
-      }
-      maxBans = newVal;
+  function renderChampionPool(list) {
+    poolEl.innerHTML = "";
+    list.forEach(champ => {
+      const item = document.createElement("div");
+      item.className = "champion";
 
-      // 아직 아무것도 진행 안 된 상태에서 0으로 바꾸면 자동으로 픽 단계 + 레드 선픽
-      if (blueBans.length === 0 && redBans.length === 0 && bluePicks.length === 0 && redPicks.length === 0) {
-        phase = (maxBans === 0) ? "pick" : "ban";
-        currentTeam = "red";
+      const img = document.createElement("img");
+      img.src = champ.img;
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "champion-name";
+      nameEl.textContent = champ.name;
+
+      item.appendChild(img);
+      item.appendChild(nameEl);
+
+      item.addEventListener("click", () => handleChampionClick(champ.name, item));
+
+      if (usedChampions.has(champ.name)) {
+        item.classList.add("used");
       }
 
-      updateStatus();
+      poolEl.appendChild(item);
+    });
+  }
+
+  function checkBattleReady() {
+    if (!battleStarted && bluePicks.length === maxPicks && redPicks.length === maxPicks) {
+      hideDraftArea();
+      startBattle();
+    } else {
+      renderBattleView();
+    }
+  }
+
+  function startBattle() {
+    battleStarted = true;
+    blueLossFlags = new Array(bluePicks.length).fill(false);
+    redLossFlags = new Array(redPicks.length).fill(false);
+    activeIndex = 0;
+    overallWinner = null;
+
+    blueWinBtn.disabled = false;
+    redWinBtn.disabled = false;
+    battleResultEl.textContent = "";
+    battleResultEl.classList.remove("final");
+
+    renderBattleView();
+  }
+
+  function renderBattleView() {
+
+    blueBenchEl.innerHTML = "";
+    redBenchEl.innerHTML = "";
+    blueActiveCardEl.innerHTML = "";
+    redActiveCardEl.innerHTML = "";
+
+    bluePicks.forEach((name, idx) => {
+      const champ = findChampion(name);
+      const card = document.createElement("div");
+      card.className = "bench-card";
+
+      if (idx === activeIndex && !blueLossFlags[idx]) card.classList.add("current");
+      if (blueLossFlags[idx]) card.classList.add("lost");
+
+      const img = document.createElement("img");
+      img.src = champ.img;
+      card.appendChild(img);
+
+      blueBenchEl.appendChild(card);
     });
 
-    pickSelect.addEventListener("change", () => {
-      const newVal = parseInt(pickSelect.value, 10);
-      if (bluePicks.length > newVal || redPicks.length > newVal) {
-        alert("이미 진행된 픽 수보다 작게 설정할 수 없습니다.");
-        pickSelect.value = String(maxPicks);
-        return;
-      }
-      maxPicks = newVal;
-      updateStatus();
-      checkBattleReady();
+    redPicks.forEach((name, idx) => {
+      const champ = findChampion(name);
+      const card = document.createElement("div");
+      card.className = "bench-card";
+
+      if (idx === activeIndex && !redLossFlags[idx]) card.classList.add("current");
+      if (redLossFlags[idx]) card.classList.add("lost");
+
+      const img = document.createElement("img");
+      img.src = champ.img;
+      card.appendChild(img);
+
+      redBenchEl.appendChild(card);
     });
 
-    resetBtn.addEventListener("click", resetAll);
-    shuffleBtn.addEventListener("click", shuffleChampions);
-    blueWinBtn.addEventListener("click", handleBlueWinRound);
-    redWinBtn.addEventListener("click", handleRedWinRound);
+    if (battleStarted && activeIndex < bluePicks.length) {
+      const blueChamp = findChampion(bluePicks[activeIndex]);
+      const redChamp = findChampion(redPicks[activeIndex]);
 
-    // 초기 세팅
-    maxBans  = parseInt(banSelect.value, 10);
+      const imgB = document.createElement("img");
+      imgB.src = blueChamp.img;
+      blueActiveCardEl.appendChild(imgB);
+
+      const imgR = document.createElement("img");
+      imgR.src = redChamp.img;
+      redActiveCardEl.appendChild(imgR);
+    }
+
+    if (overallWinner) {
+      document.querySelector(".battle-main").style.display = "none";
+
+      battleResultEl.classList.add("final");
+      battleResultEl.style.color = overallWinner === "blue" ? "#3b82f6" : "#f97373";
+      battleResultEl.textContent =
+        overallWinner === "blue" ? "BLUE TEAM WIN" : "RED TEAM WIN";
+
+      blueWinBtn.disabled = true;
+      redWinBtn.disabled = true;
+      return;
+    }
+  }
+
+  function handleBlueWinRound() {
+    if (!battleStarted || overallWinner) return;
+
+    blueScore++;
+    updateScoreBoard();
+
+    redLossFlags[activeIndex] = true;
+
+    if (redLossFlags.every(f => f)) {
+      overallWinner = "blue";
+    } else {
+      activeIndex++;
+      if (activeIndex >= bluePicks.length) decideWinnerIfNeeded();
+    }
+
+    renderBattleView();
+  }
+
+  function handleRedWinRound() {
+    if (!battleStarted || overallWinner) return;
+
+    redScore++;
+    updateScoreBoard();
+
+    blueLossFlags[activeIndex] = true;
+
+    if (blueLossFlags.every(f => f)) {
+      overallWinner = "red";
+    } else {
+      activeIndex++;
+      if (activeIndex >= bluePicks.length) decideWinnerIfNeeded();
+    }
+
+    renderBattleView();
+  }
+
+  function decideWinnerIfNeeded() {
+    if (overallWinner) return;
+
+    const blueAlive = blueLossFlags.filter(f => !f).length;
+    const redAlive = redLossFlags.filter(f => !f).length;
+
+    if (blueAlive > redAlive) overallWinner = "blue";
+    else if (redAlive > blueAlive) overallWinner = "red";
+    else {
+      battleResultEl.textContent = "무승부";
+      battleResultEl.style.color = "#22c55e";
+    }
+  }
+
+  function resetAll() {
+    blueBans = [];
+    redBans = [];
+    bluePicks = [];
+    redPicks = [];
+    usedChampions = new Set();
+
+    battleStarted = false;
+    blueLossFlags = [];
+    redLossFlags = [];
+    activeIndex = 0;
+    overallWinner = null;
+
+    maxBans = parseInt(banSelect.value, 10);
     maxPicks = parseInt(pickSelect.value, 10);
-    phase = (maxBans === 0) ? "pick" : "ban";
+
+    phase = maxBans === 0 ? "pick" : "ban";
     currentTeam = "red";
 
+    battleResultEl.textContent = "";
+    battleResultEl.classList.remove("final");
+
+    blueWinBtn.disabled = true;
+    redWinBtn.disabled = true;
+
+    showDraftArea();
     renderChampionPool(championData);
     updateStatus();
     renderBattleView();
-  </script>
+  }
+
+  function shuffleChampions() {
+    const draftFinished = (bluePicks.length === maxPicks && redPicks.length === maxPicks);
+
+    if (draftFinished) {
+      bluePicks = shuffleArray([...bluePicks]);
+      redPicks = shuffleArray([...redPicks]);
+
+      blueLossFlags = new Array(bluePicks.length).fill(false);
+      redLossFlags = new Array(redPicks.length).fill(false);
+      activeIndex = 0;
+      overallWinner = null;
+      battleStarted = true;
+
+      document.querySelector(".battle-main").style.display = "flex";
+
+      renderBattleView();
+      return;
+    }
+
+    const copy = [...championData];
+    shuffleArray(copy);
+    renderChampionPool(copy);
+  }
+
+  banSelect.addEventListener("change", () => {
+    const newVal = parseInt(banSelect.value, 10);
+
+    if (blueBans.length > newVal || redBans.length > newVal) {
+      alert("이미 진행된 밴 수보다 작게 설정할 수 없음");
+      banSelect.value = String(maxBans);
+      return;
+    }
+
+    maxBans = newVal;
+
+    updateStatus();
+  });
+
+  pickSelect.addEventListener("change", () => {
+    const newVal = parseInt(pickSelect.value, 10);
+
+    if (bluePicks.length > newVal || redPicks.length > newVal) {
+      alert("이미 진행된 픽 수보다 작게 설정할 수 없음");
+      pickSelect.value = String(maxPicks);
+      return;
+    }
+
+    maxPicks = newVal;
+    updateStatus();
+    checkBattleReady();
+  });
+
+  resetBtn.addEventListener("click", resetAll);
+  shuffleBtn.addEventListener("click", shuffleChampions);
+  blueWinBtn.addEventListener("click", handleBlueWinRound);
+  redWinBtn.addEventListener("click", handleRedWinRound);
+
+  maxBans = parseInt(banSelect.value, 10);
+  maxPicks = parseInt(pickSelect.value, 10);
+  phase = maxBans === 0 ? "pick" : "ban";
+  currentTeam = "red";
+
+  renderChampionPool(championData);
+  updateStatus();
+  renderBattleView();
+</script>
+
 </body>
 </html>
