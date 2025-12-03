@@ -238,14 +238,13 @@
       border-color: #f97316;
       box-shadow: 0 0 8px rgba(248,148,18,0.7);
     }
-    .bench-card.lost::after {
-      content: "";
-      position: absolute;
-      left: -10%;
-      top: 50%;
-      width: 120%;
-      border-top: 3px solid #ef4444;
-      transform: rotate(-45deg);
+
+    /* 패배한 캐릭터: 회색 처리 */
+    .bench-card.lost,
+    .big-card.lost {
+      filter: grayscale(100%);
+      opacity: 0.35;
+      border-color: #4b5563;
     }
 
     .battle-center {
@@ -277,15 +276,7 @@
       height: 100%;
       object-fit: cover;
     }
-    .big-card.lost::after {
-      content: "";
-      position: absolute;
-      left: -10%;
-      top: 50%;
-      width: 120%;
-      border-top: 4px solid #ef4444;
-      transform: rotate(-45deg);
-    }
+
     .vs-text {
       font-weight: 800;
       font-size: 20px;
@@ -296,16 +287,27 @@
       gap: 40px;
       margin-top: 6px;
     }
+
+    /* WIN 버튼 기본 스타일 */
     .battle-btn {
       min-width: 80px;
       border-radius: 4px;
-      border: 1px solid #ef4444;
       background: transparent;
-      color: #ef4444;
       font-weight: 700;
       padding: 4px 10px;
       cursor: pointer;
     }
+    /* RED WIN: 빨간색 */
+    #redWinBtn {
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
+    /* BLUE WIN: 파란색 */
+    #blueWinBtn {
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
+    }
+
     .battle-btn:disabled {
       opacity: 0.4;
       cursor: default;
@@ -315,7 +317,16 @@
       font-size: 16px;
       font-weight: 800;
       color: #22c55e;
+      text-align: center;
     }
+    /* 최종 승리 텍스트 (라운드 모두 종료 후) */
+    .battle-result.final {
+      font-size: 55px;
+      font-weight: 900;
+      margin-top: 16px;
+      letter-spacing: 2px;
+    }
+
     .team-label-small {
       font-size: 12px;
       color: #9ca3af;
@@ -673,10 +684,36 @@
       blueWinBtn.disabled = false;
       redWinBtn.disabled  = false;
       battleResultEl.textContent = "";
+      battleResultEl.classList.remove("final");
       renderBattleView();
     }
 
     function renderBattleView() {
+      // 항상 초기에는 final 클래스 제거
+      battleResultEl.classList.remove("final");
+
+      // 최종 승자 결정 시: 초상화 제거 + 큰 글씨로 승자 표시
+      if (overallWinner) {
+        blueBenchEl.innerHTML = "";
+        redBenchEl.innerHTML  = "";
+        blueActiveCardEl.innerHTML = "";
+        redActiveCardEl.innerHTML  = "";
+        blueActiveCardEl.classList.remove("lost");
+        redActiveCardEl.classList.remove("lost");
+
+        blueWinBtn.disabled = true;
+        redWinBtn.disabled  = true;
+
+  // ★ battle-center 숨기기
+  document.querySelector(".battle-main").style.display = "none";
+
+        battleResultEl.classList.add("final");
+        battleResultEl.style.color = (overallWinner === "blue") ? "#3b82f6" : "#f97373";
+        battleResultEl.textContent = overallWinner === "blue" ? "BLUE TEAM WIN" : "RED TEAM WIN";
+        return;
+      }
+
+      // 아직 최종 승자 안 났을 때: 라인업 / 액티브 카드 표시
       blueBenchEl.innerHTML = "";
       redBenchEl.innerHTML  = "";
 
@@ -740,7 +777,7 @@
         if (redLossFlags[activeIndex])  redActiveCardEl.classList.add("lost");
       }
 
-      if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) {
+      if (!battleStarted || activeIndex >= bluePicks.length) {
         blueWinBtn.disabled = true;
         redWinBtn.disabled  = true;
       } else {
@@ -748,19 +785,15 @@
         redWinBtn.disabled  = false;
       }
 
-      if (overallWinner === "blue") {
-        battleResultEl.textContent = "블루 팀 WIN";
-      } else if (overallWinner === "red") {
-        battleResultEl.textContent = "레드 팀 WIN";
-      } else {
-        battleResultEl.textContent = "";
-      }
+      // 진행 중일 땐 라운드 결과 텍스트 리셋 (최종 승리/무승부 외)
+      battleResultEl.textContent = "";
     }
 
     // BLUE WIN
     function handleBlueWinRound() {
       if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
 
+      // 레드가 패배
       redLossFlags[activeIndex] = true;
 
       if (redLossFlags.every(f => f)) {
@@ -776,6 +809,7 @@
     function handleRedWinRound() {
       if (!battleStarted || overallWinner || activeIndex >= bluePicks.length) return;
 
+      // 블루가 패배
       blueLossFlags[activeIndex] = true;
 
       if (blueLossFlags.every(f => f)) {
@@ -798,6 +832,8 @@
       } else if (redAlive > blueAlive) {
         overallWinner = "red";
       } else {
+        battleResultEl.classList.remove("final");
+        battleResultEl.style.color = "#22c55e";
         battleResultEl.textContent = "무승부 (남은 챔피언 수 동일)";
       }
     }
@@ -822,6 +858,8 @@
       currentTeam = "red";
 
       battleResultEl.textContent = "";
+      battleResultEl.classList.remove("final");
+      battleResultEl.style.color = "#22c55e";
       blueWinBtn.disabled = true;
       redWinBtn.disabled  = true;
 
