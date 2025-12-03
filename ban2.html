@@ -262,6 +262,15 @@
       align-items: center;
       gap: 8px;
     }
+
+    /* 점수판 */
+    .score-board {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
     .battle-main {
       display: flex;
       align-items: center;
@@ -441,6 +450,9 @@
     </div>
 
     <div class="battle-center">
+      <!-- 점수판 -->
+      <div class="score-board" id="scoreBoard">RED 0 : 0 BLUE</div>
+
       <div class="battle-main">
         <!-- LEFT: 레드 -->
         <div class="big-card" id="redActiveCard"></div>
@@ -520,6 +532,10 @@
     let redActiveIdx = 0;
     let overallWinner = null;
 
+    // 점수
+    let redScore = 0;
+    let blueScore = 0;
+
     const statusEl = document.getElementById("status");
     const blueBansEl = document.getElementById("blueBans");
     const redBansEl = document.getElementById("redBans");
@@ -539,6 +555,7 @@
     const blueWinBtn = document.getElementById("blueWinBtn");
     const redWinBtn = document.getElementById("redWinBtn");
     const battleResultEl = document.getElementById("battleResult");
+    const scoreBoardEl = document.getElementById("scoreBoard");
 
     function shuffleArray(arr) {
       for (let i = arr.length - 1; i > 0; i--) {
@@ -577,6 +594,12 @@
         html = `<span class="phase-tag phase-pick">PICK PHASE</span><span class="done">모든 밴/픽이 완료되었습니다.</span>`;
       }
       statusEl.innerHTML = html;
+    }
+
+    // 점수판 업데이트
+    function updateScoreBoard() {
+      if (!scoreBoardEl) return;
+      scoreBoardEl.textContent = `${redScore} : ${blueScore}`;
     }
 
     function addChip(parentEl, name, type) {
@@ -734,15 +757,17 @@
         blueWinBtn.disabled = true;
         redWinBtn.disabled  = true;
 
-  // ★ battle-center 숨기기
-  document.querySelector(".battle-main").style.display = "none";
-
+        // ★ battle-main 숨기기
+        document.querySelector(".battle-main").style.display = "none";
 
         battleResultEl.classList.add("final");
         battleResultEl.style.color = (overallWinner === "blue") ? "#3b82f6" : "#f97373";
         battleResultEl.textContent = (overallWinner === "blue") ? "BLUE TEAM WIN" : "RED TEAM WIN";
         return;
       }
+
+      // 경기 중에는 battle-main 보여주기
+      document.querySelector(".battle-main").style.display = "flex";
 
       blueBenchEl.innerHTML = "";
       redBenchEl.innerHTML  = "";
@@ -826,6 +851,10 @@
     function handleBlueWinRound() {
       if (!battleStarted || overallWinner) return;
 
+      // BLUE WIN → 점수 +1
+      blueScore += 1;
+      updateScoreBoard();
+
       // BLUE WIN → 레드 챔피언 패배
       redLossFlags[redActiveIdx] = true;
 
@@ -844,6 +873,10 @@
 
     function handleRedWinRound() {
       if (!battleStarted || overallWinner) return;
+
+      // RED WIN → 점수 +1
+      redScore += 1;
+      updateScoreBoard();
 
       // RED WIN → 블루 챔피언 패배
       blueLossFlags[blueActiveIdx] = true;
@@ -876,6 +909,11 @@
       blueActiveIdx = 0;
       redActiveIdx  = 0;
       overallWinner = null;
+
+      // 점수 리셋
+      redScore = 0;
+      blueScore = 0;
+      updateScoreBoard();
 
       battleResultEl.textContent = "";
       battleResultEl.classList.remove("final");
@@ -918,7 +956,7 @@
         return;
       }
 
-      // 이미 밴픽이 끝난 상태라면: 라인업 순서 셔플
+      // 이미 밴픽이 끝난 상태라면: 라인업 순서 셔플 후 다시 시작
       bluePicks = shuffleArray([...bluePicks]);
       redPicks  = shuffleArray([...redPicks]);
 
@@ -989,6 +1027,7 @@
 
     renderChampionPool(championData);
     updateStatus();
+    updateScoreBoard(); // RED 0 : 0 BLUE 초기 표시
     renderBattleView();
   </script>
 </body>
